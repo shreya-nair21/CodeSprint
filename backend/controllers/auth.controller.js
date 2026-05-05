@@ -22,7 +22,7 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(10); //generates salt to hash password
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await User.create({
