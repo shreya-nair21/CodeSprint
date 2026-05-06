@@ -1,5 +1,7 @@
 import { Submission, User } from '../models.js';
 
+//to fetch leaderboard
+
 export const getLeaderboard = async (req, res) => {
   try {
     // Aggregate points from submissions per user
