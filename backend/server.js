@@ -2,6 +2,10 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import authRoutes from './routes/auth.routes.js';
+import problemRoutes from './routes/problems.routes.js';
+import submissionRoutes from './routes/submissions.routes.js';
+import leaderboardRoutes from './routes/leaderboard.routes.js';
 
 dotenv.config();
 
@@ -28,3 +32,9 @@ mongoose.connect(MONGO_URI)
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running' });
 });
+
+// Mount routers
+app.use('/api/auth', authRoutes);
+app.use('/api/problems', problemRoutes);
+app.use('/api/submissions', submissionRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
