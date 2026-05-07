@@ -24,20 +24,23 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="app-container">
-          <Navbar />
-          <main>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              
-              {/* Protected Routes */}
-              <Route path="/problems" element={<ProtectedRoute><Problems /></ProtectedRoute>} />
-              <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
-              <Route path="/submissions" element={<ProtectedRoute><Submissions /></ProtectedRoute>} />
-            </Routes>
-          </main>
+        <div className="app-wrapper">
+          <div className="global-bg" />
+          <div className="app-container">
+            <Navbar />
+            <main>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                
+                {/* Protected Routes */}
+                <Route path="/problems" element={<ProtectedRoute><Problems /></ProtectedRoute>} />
+                <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
+                <Route path="/submissions" element={<ProtectedRoute><Submissions /></ProtectedRoute>} />
+              </Routes>
+            </main>
+          </div>
         </div>
       </Router>
     </AuthProvider>
