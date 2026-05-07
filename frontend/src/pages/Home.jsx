@@ -120,6 +120,11 @@ const Home = () => {
   return (
     <div className="container" style={{ padding: '6rem 1rem' }}>
       <div className="text-center" style={{ maxWidth: '800px', margin: '0 auto' }}>
+        {/* <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'var(--surface-color)', border: '1px solid var(--border-color)', borderRadius: '999px', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-main)', marginBottom: '2rem', boxShadow: 'var(--shadow-sm)' }}> */}
+        {/* <span style={{ color: 'var(--accent-color)' }}>New</span> */}
+        {/* <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--border-color)' }} /> */}
+        {/* AI-Powered Insights are now live! */}
+        {/* </div> */}
         <h1 className="text-gradient" style={{ fontSize: '4.5rem', fontWeight: '700', marginBottom: '1.5rem', letterSpacing: '-0.04em', lineHeight: '1.1' }}>
           Master Your Code.
         </h1>
@@ -127,25 +132,29 @@ const Home = () => {
           CodeSprint is the modern platform for developers to practice algorithms, prepare for interviews, and compete globally.
         </p>
 
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          {user ? (
-            <Link to="/problems" className="btn-primary" style={{ padding: '0.8rem 2rem', fontSize: '1.1rem' }}>
-              Start Coding
-            </Link>
-          ) : (
-            <>
-              <Link to="/register" className="btn-primary" style={{ padding: '0.8rem 2rem', fontSize: '1.1rem' }}>
-                Start for free
-              </Link>
-              <Link to="/login" className="panel" style={{ color: 'var(--text-main)', padding: '0.8rem 2rem', fontSize: '1.1rem', background: 'transparent' }}>
-                Sign In
-              </Link>
-            </>
-          )}
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '3rem' }}>
+          <Link to="/problems" className="btn-primary" style={{ padding: '0.8rem 2.5rem', fontSize: '1.1rem', borderRadius: '999px' }}>
+            Start Coding
+          </Link>
+          <a href="#features" style={{ padding: '0.8rem 2.5rem', fontSize: '1.1rem', borderRadius: '999px', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)', fontWeight: '500', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s ease', cursor: 'pointer' }}>
+            Explore Features
+          </a>
+        </div>
+
+        {/* Social Proof */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+          <div style={{ display: 'flex' }}>
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} style={{ width: '32px', height: '32px', borderRadius: '50%', border: '2px solid var(--bg-color)', background: `linear-gradient(135deg, hsl(${i * 45}, 70%, 60%), hsl(${i * 45 + 30}, 70%, 50%))`, marginLeft: i !== 1 ? '-12px' : '0' }} />
+            ))}
+          </div>
+          <div>
+            <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>10,000+</span> engineers already joined
+          </div>
         </div>
       </div>
 
-      <div style={{ marginTop: '8rem' }}>
+      <div id="features" style={{ marginTop: '8rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
           <h2 style={{ fontSize: '2.5rem', fontWeight: '700', marginBottom: '1rem', letterSpacing: '-0.03em' }}>A platform built for engineers.</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '600px', margin: '0 auto' }}>Everything you need to assess skills, practice effectively, and write better code.</p>
