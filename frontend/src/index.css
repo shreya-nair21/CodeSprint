@@ -1,26 +1,53 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Ultra-Modern Dark Theme Palette */
-  --bg-color: #000000;
-  --surface-color: #0a0a0a;
-  --surface-hover: #171717;
+  /* Light Theme Palette */
+  --bg-color: #ffffff;
+  --bg-gradient: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+  --surface-color: #f9fafb;
+  --surface-hover: #f3f4f6;
   --primary-color: #3b82f6; /* Modern Blue */
   --primary-hover: #2563eb;
   --secondary-color: #8b5cf6; /* Modern Purple */
   --accent-color: #10b981;
   --danger-color: #ef4444;
   
-  --text-main: #ededed;
-  --text-muted: #a1a1aa;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --nav-bg: rgba(0, 0, 0, 0.8);
+  --text-main: #111827;
+  --text-muted: #6b7280;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  
+  /* Grid Background Variables (Light) */
+  --grid-line: #f0f0f0;
+  --grid-glow: #d5c5ff;
+  --grid-glow-2: transparent;
   
   /* Utilities */
   --border-radius: 8px;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+}
+
+[data-theme='dark'] {
+  /* Sleek Modern Dark Theme Palette */
+  --bg-color: #0b0e14;
+  --bg-gradient: linear-gradient(135deg, #0b0e14 0%, #111622 100%);
+  --surface-color: #131821;
+  --surface-hover: #1c2331;
+  
+  --text-main: #ededed;
+  --text-muted: #a1a1aa;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --nav-bg: rgba(11, 14, 20, 0.8);
+  
+  /* Grid Background Variables (Dark) */
+  --grid-line: rgba(255, 255, 255, 0.07);
+  --grid-glow: rgba(139, 92, 246, 0.2);
+  --grid-glow-2: rgba(59, 130, 246, 0.15);
+  
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
   --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
 }
 
 * {
@@ -37,6 +64,41 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1), color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Background wrapper */
+.app-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-color);
+  background: var(--bg-gradient);
+  transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.global-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
+    radial-gradient(circle 800px at 100% 200px, var(--grid-glow), transparent),
+    radial-gradient(circle 600px at 0% 100%, var(--grid-glow-2), transparent);
+  background-size: 96px 64px, 96px 64px, 100% 100%, 100% 100%;
+}
+
+.app-container {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Modern Panel */
@@ -135,7 +197,7 @@ input:focus, textarea:focus, select:focus {
 
 /* Text Gradients */
 .text-gradient {
-  background: linear-gradient(135deg, #fff 0%, #a1a1aa 100%);
+  background: linear-gradient(135deg, var(--text-main) 0%, var(--text-muted) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
