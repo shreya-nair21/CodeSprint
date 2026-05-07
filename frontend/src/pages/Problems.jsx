@@ -33,7 +33,7 @@ const Problems = () => {
   const filteredProblems = problems.filter(p =>
     p.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
+  //design of problem table
   const getDifficultyColor = (diff) => {
     switch (diff) {
       case 'Easy': return 'var(--accent-color)'; // Green
