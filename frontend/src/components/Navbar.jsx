@@ -24,7 +24,7 @@ const Navbar = () => {
 
   return (
     <nav style={{ background: 'var(--nav-bg)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid var(--border-color)', position: 'sticky', top: 0, zIndex: 50 }}>
-      <div className="container flex justify-between items-center" style={{ height: '64px' }}>
+      <div style={{ height: '64px', width: '100%', maxWidth: '1440px', margin: '0 auto', padding: '0 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div className="flex items-center" style={{ gap: '2rem' }}>
           <Link to="/" className="flex items-center" style={{ gap: '0.5rem', color: 'var(--text-main)', fontWeight: '600', fontSize: '1.1rem', letterSpacing: '-0.02em' }}>
             <Terminal size={20} />
@@ -33,8 +33,12 @@ const Navbar = () => {
           
           {/* Navigation Links */}
           <div className="flex items-center" style={{ gap: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-            <Link to="/problems" className="hover:text-main">Problems</Link>
-            <Link to="/leaderboard" className="hover:text-main">Leaderboard</Link>
+            {user && (
+              <>
+                <Link to="/problems" className="hover:text-main">Problems</Link>
+                <Link to="/leaderboard" className="hover:text-main">Leaderboard</Link>
+              </>
+            )}
           </div>
         </div>
         
@@ -58,12 +62,9 @@ const Navbar = () => {
               </div>
             </>
           ) : (
-            <>
-              <Link to="/login" style={{ color: 'var(--text-muted)' }}>Sign in</Link>
-              <Link to="/register" className="btn-primary">
-                Get Started
-              </Link>
-            </>
+            <Link to="/login" className="btn-primary">
+              Login / Sign Up
+            </Link>
           )}
         </div>
       </div>
