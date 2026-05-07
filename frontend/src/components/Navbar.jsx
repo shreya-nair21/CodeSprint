@@ -1,10 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogOut, Terminal, User } from 'lucide-react';
+import { LogOut, Terminal, User, Sun, Moon } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   const handleLogout = () => {
     logout();
@@ -28,6 +39,10 @@ const Navbar = () => {
         </div>
         
         <div className="flex items-center" style={{ gap: '1.5rem', fontSize: '0.9rem' }}>
+          <button onClick={toggleTheme} className="flex items-center" style={{ background: 'transparent', color: 'var(--text-main)' }}>
+            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+          </button>
+          
           {user ? (
             <>
               <Link to="/submissions" style={{ color: 'var(--text-muted)' }}>Submissions</Link>
