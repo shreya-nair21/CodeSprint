@@ -1,0 +1,196 @@
+[
+  {
+    "title": "Two Sum",
+    "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\n**Input Format:**\nThe first line contains an integer N, the size of the array.\nThe second line contains N space-separated integers, the array elements.\nThe third line contains an integer target.\n\n**Output Format:**\nPrint two space-separated integers representing the indices (0-indexed) of the two numbers. Assume exactly one solution exists.\n\n**Example Input:**\n4\n2 7 11 15\n9\n\n**Example Output:**\n0 1",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "4\n2 7 11 15\n9",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "3\n3 2 4\n6",
+        "expectedOutput": "1 2"
+      },
+      {
+        "input": "2\n3 3\n6",
+        "expectedOutput": "0 1"
+      }
+    ]
+  },
+  {
+    "title": "Palindrome Number",
+    "description": "Given an integer x, return true if x is a palindrome, and false otherwise.\n\n**Input Format:**\nA single line containing the integer x.\n\n**Output Format:**\nPrint 'true' if the number is a palindrome, otherwise print 'false'.\n\n**Example Input:**\n121\n\n**Example Output:**\ntrue",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "121",
+        "expectedOutput": "true"
+      },
+      {
+        "input": "-121",
+        "expectedOutput": "false"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "false"
+      }
+    ]
+  },
+  {
+    "title": "Valid Parentheses",
+    "description": "Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.\n\n**Input Format:**\nA single line containing the string s.\n\n**Output Format:**\nPrint 'true' if valid, otherwise 'false'.\n\n**Example Input:**\n()[]{}\n\n**Example Output:**\ntrue",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "()[]{}",
+        "expectedOutput": "true"
+      },
+      {
+        "input": "(]",
+        "expectedOutput": "false"
+      },
+      {
+        "input": "([)]",
+        "expectedOutput": "false"
+      },
+      {
+        "input": "{[]}",
+        "expectedOutput": "true"
+      }
+    ]
+  },
+  {
+    "title": "Reverse String",
+    "description": "Write a program that reverses a given string.\n\n**Input Format:**\nA single line containing a string without spaces.\n\n**Output Format:**\nThe reversed string.\n\n**Example Input:**\nhello\n\n**Example Output:**\nolleh",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "hello",
+        "expectedOutput": "olleh"
+      },
+      {
+        "input": "Hannah",
+        "expectedOutput": "hannaH"
+      },
+      {
+        "input": "racecar",
+        "expectedOutput": "racecar"
+      }
+    ]
+  },
+  {
+    "title": "Maximum Subarray",
+    "description": "Given an integer array nums, find the subarray with the largest sum, and return its sum.\n\n**Input Format:**\nThe first line contains an integer N.\nThe second line contains N space-separated integers.\n\n**Output Format:**\nPrint a single integer representing the maximum sum.\n\n**Example Input:**\n9\n-2 1 -3 4 -1 2 1 -5 4\n\n**Example Output:**\n6",
+    "difficulty": "Medium",
+    "testCases": [
+      {
+        "input": "9\n-2 1 -3 4 -1 2 1 -5 4",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "5\n5 4 -1 7 8",
+        "expectedOutput": "23"
+      }
+    ]
+  },
+  {
+    "title": "Contains Duplicate",
+    "description": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.\n\n**Input Format:**\nThe first line contains N.\nThe second line contains N space-separated integers.\n\n**Output Format:**\nPrint 'true' or 'false'.\n\n**Example Input:**\n4\n1 2 3 1\n\n**Example Output:**\ntrue",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "4\n1 2 3 1",
+        "expectedOutput": "true"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "false"
+      },
+      {
+        "input": "10\n1 1 1 3 3 4 3 2 4 2",
+        "expectedOutput": "true"
+      }
+    ]
+  },
+  {
+    "title": "Climbing Stairs",
+    "description": "You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1 or 2 steps. In how many distinct ways can you climb to the top?\n\n**Input Format:**\nA single integer n.\n\n**Output Format:**\nA single integer representing the number of ways.\n\n**Example Input:**\n3\n\n**Example Output:**\n3",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "5",
+        "expectedOutput": "8"
+      }
+    ]
+  },
+  {
+    "title": "Missing Number",
+    "description": "Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.\n\n**Input Format:**\nThe first line is N.\nThe second line contains N space-separated integers.\n\n**Output Format:**\nThe missing integer.\n\n**Example Input:**\n3\n3 0 1\n\n**Example Output:**\n2",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "3\n3 0 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2\n0 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "9\n9 6 4 2 3 5 7 0 1",
+        "expectedOutput": "8"
+      }
+    ]
+  },
+  {
+    "title": "Power of Two",
+    "description": "Given an integer n, return true if it is a power of two. Otherwise, return false.\n\n**Input Format:**\nA single integer n.\n\n**Output Format:**\n'true' or 'false'\n\n**Example Input:**\n16\n\n**Example Output:**\ntrue",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "1",
+        "expectedOutput": "true"
+      },
+      {
+        "input": "16",
+        "expectedOutput": "true"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "false"
+      }
+    ]
+  },
+  {
+    "title": "Fizz Buzz",
+    "description": "Given an integer n, print a string array answer (1-indexed) where:\nanswer[i] == \"FizzBuzz\" if i is divisible by 3 and 5.\nanswer[i] == \"Fizz\" if i is divisible by 3.\nanswer[i] == \"Buzz\" if i is divisible by 5.\nanswer[i] == i (as a string) if none of the above conditions are true.\n\n**Input Format:**\nAn integer n.\n\n**Output Format:**\nA space-separated sequence of answers.\n\n**Example Input:**\n3\n\n**Example Output:**\n1 2 Fizz",
+    "difficulty": "Easy",
+    "testCases": [
+      {
+        "input": "3",
+        "expectedOutput": "1 2 Fizz"
+      },
+      {
+        "input": "5",
+        "expectedOutput": "1 2 Fizz 4 Buzz"
+      },
+      {
+        "input": "15",
+        "expectedOutput": "1 2 Fizz 4 Buzz Fizz 7 8 Fizz Buzz 11 Fizz 13 14 FizzBuzz"
+      }
+    ]
+  }
+]
