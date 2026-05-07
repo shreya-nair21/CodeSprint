@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Problems from './pages/Problems';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -16,7 +17,6 @@ const ProtectedRoute = ({ children }) => {
 };
 
 // Placeholder components for the rest of the app
-const Problems = () => <div className="container" style={{ padding: '2rem' }}><h1 className="text-center">Problems Library (Coming Soon)</h1></div>;
 const Leaderboard = () => <div className="container" style={{ padding: '2rem' }}><h1 className="text-center">Leaderboard (Coming Soon)</h1></div>;
 const Submissions = () => <div className="container" style={{ padding: '2rem' }}><h1 className="text-center">My Submissions (Coming Soon)</h1></div>;
 

@@ -9,9 +9,8 @@ const Problems = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Assuming url is provided via some context or env variable. If not, we'll hardcode or use relative.
-  // In Food Del project, url was from StoreContext. Let's assume standard Vite proxy or absolute URL.
+
+
   const API_URL = 'http://localhost:5000';
 
   useEffect(() => {
@@ -31,7 +30,7 @@ const Problems = () => {
     fetchProblems();
   }, []);
 
-  const filteredProblems = problems.filter(p => 
+  const filteredProblems = problems.filter(p =>
     p.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -51,7 +50,7 @@ const Problems = () => {
           <h1 style={{ fontSize: '2.5rem', fontWeight: '700', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>Problem Library</h1>
           <p style={{ color: 'var(--text-muted)' }}>Sharpen your skills with our collection of algorithmic challenges.</p>
         </div>
-        
+
         <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
           <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
             <Search size={18} />
@@ -99,13 +98,13 @@ const Problems = () => {
                         </Link>
                       </td>
                       <td style={{ padding: '1rem 1.5rem' }}>
-                        <span style={{ 
-                          color: getDifficultyColor(problem.difficulty), 
+                        <span style={{
+                          color: getDifficultyColor(problem.difficulty),
                           background: `${getDifficultyColor(problem.difficulty)}15`, // 15 is hex alpha (~8%)
-                          padding: '0.25rem 0.75rem', 
-                          borderRadius: '999px', 
-                          fontSize: '0.85rem', 
-                          fontWeight: '600' 
+                          padding: '0.25rem 0.75rem',
+                          borderRadius: '999px',
+                          fontSize: '0.85rem',
+                          fontWeight: '600'
                         }}>
                           {problem.difficulty}
                         </span>
