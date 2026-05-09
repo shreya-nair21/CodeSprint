@@ -30,8 +30,16 @@ const submissionSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const commentSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  problemId: { type: mongoose.Schema.Types.ObjectId, ref: 'Problem', required: true },
+  content: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+
 const User = mongoose.model('User', userSchema);
 const Problem = mongoose.model('Problem', problemSchema);
 const Submission = mongoose.model('Submission', submissionSchema);
+const Comment = mongoose.model('Comment', commentSchema);
 
-export { User, Problem, Submission };
+export { User, Problem, Submission, Comment };
