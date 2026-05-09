@@ -6,6 +6,7 @@ import authRoutes from './routes/auth.routes.js';
 import problemRoutes from './routes/problems.routes.js';
 import submissionRoutes from './routes/submissions.routes.js';
 import leaderboardRoutes from './routes/leaderboard.routes.js';
+import commentRoutes from './routes/comments.routes.js';
 
 dotenv.config();
 
@@ -38,3 +39,4 @@ app.use('/api/auth', authRoutes);
 app.use('/api/problems', problemRoutes);
 app.use('/api/submissions', submissionRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/comments', commentRoutes);
