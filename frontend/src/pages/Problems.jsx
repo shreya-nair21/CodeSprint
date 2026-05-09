@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import { Search, Code2, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -10,14 +10,11 @@ const Problems = () => {
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-
-  const API_URL = 'http://localhost:5000';
-
   useEffect(() => {
     const fetchProblems = async () => {
       try {
-        // Fetch all problems
-        const response = await axios.get(`${API_URL}/api/problems`);
+        // Fetch all problems using the shared axios instance
+        const response = await api.get('/problems');
         setProblems(response.data);
       } catch (err) {
         setError('Failed to load problems. Please try again later.');
