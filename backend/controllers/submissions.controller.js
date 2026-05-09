@@ -45,29 +45,41 @@ export const submitCode = async (req, res) => {
           language: runtime.language,
           versionIndex: runtime.versionIndex,
           stdin: testCase.input
-        }
+        },
+        timeout: 10000 // 10 seconds timeout
       };
 
-      const response = await axios.request(options);
-      const result = response.data;
+      try {
+        const response = await axios.request(options);
+        const result = response.data;
 
-      // Check if output matches expected output
-      const actualOutput = result.output ? result.output.trim() : '';
+        // Check if JDoodle returned an error in the body even with 200 OK
+        if (result.error || result.statusCode === 429) {
+          allPassed = false;
+          failedStatus = result.error || 'JDoodle API Limit Reached';
+          break;
+        }
 
-      if (result.error || result.statusCode !== 200) {
-        allPassed = false;
-        failedStatus = 'Compilation/Runtime Error';
-        break;
+        // Check if output matches expected output
+        const actualOutput = result.output ? result.output.trim() : '';
+
+        if (actualOutput !== testCase.expectedOutput.trim()) {
+          allPassed = false;
+          failedStatus = 'Wrong Answer';
+          break;
+        }
+
+        // Calculate time
+        totalTime += parseFloat(result.cpuTime || 0);
+      } catch (err) {
+        if (err.response && err.response.status === 429) {
+          return res.status(429).json({ 
+            message: 'JDoodle Daily Limit Reached', 
+            error: 'You have reached the daily limit of the free JDoodle API. Please try again tomorrow or use a different API key.' 
+          });
+        }
+        throw err; // Re-throw to be caught by the outer try-catch
       }
-
-      if (actualOutput !== testCase.expectedOutput.trim()) {
-        allPassed = false;
-        failedStatus = 'Wrong Answer';
-        break;
-      }
-
-      // Calculate time
-      totalTime += parseFloat(result.cpuTime || 0);
     }
 
     // Points calculation (example: 100 max points minus time taken)
@@ -96,7 +108,11 @@ export const submitCode = async (req, res) => {
 
 export const getUserSubmissions = async (req, res) => {
   try {
-    const submissions = await Submission.find({ userId: req.user.id })
+    const { problemId } = req.query;
+    const query = { userId: req.user.id };
+    if (problemId) query.problemId = problemId;
+
+    const submissions = await Submission.find(query)
       .populate('problemId', 'title difficulty')
       .sort({ createdAt: -1 });
 
