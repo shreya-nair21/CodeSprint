@@ -3,16 +3,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { marked } from 'marked';
 import api from '../api/axios';
-import { 
-  Play, 
-  Send, 
-  ChevronLeft, 
-  Loader2, 
-  CheckCircle2, 
-  XCircle, 
-  Info, 
-  Settings, 
-  RotateCcw, 
+import {
+  Play,
+  Send,
+  ChevronLeft,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Info,
+  Settings,
+  RotateCcw,
   Terminal as ConsoleIcon,
   ChevronUp,
   ChevronDown,
@@ -34,10 +34,10 @@ const ProblemWorkspace = () => {
   const [result, setResult] = useState(null);
   const [leftTab, setLeftTab] = useState('description');
   const [consoleOpen, setConsoleOpen] = useState(false);
-  
+
   const [submissions, setSubmissions] = useState([]);
   const [loadingSubmissions, setLoadingSubmissions] = useState(false);
-  
+
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loadingComments, setLoadingComments] = useState(false);
@@ -107,7 +107,7 @@ const ProblemWorkspace = () => {
   const handleAddComment = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
-    
+
     setPostingComment(true);
     try {
       const response = await api.post('/comments', {
@@ -124,25 +124,24 @@ const ProblemWorkspace = () => {
     }
   };
 
-  const handleSubmit = async () => {
-    if (!code) return;
+  const handleSubmit = async (isSubmit = false) => {
     setSubmitting(true);
-    setResult(null);
     setConsoleOpen(true);
+    setResult(null);
     try {
       const response = await api.post('/submissions', {
         problemId: id,
         code,
-        languageId: parseInt(language)
+        languageId: parseInt(language),
+        runOnly: !isSubmit
       });
       setResult(response.data);
-      // Refresh submissions if we are on that tab
-      if (leftTab === 'submissions') fetchSubmissions();
+      if (isSubmit && leftTab === 'submissions') fetchSubmissions();
     } catch (error) {
       console.error('Submission error:', error);
-      setResult({ 
-        status: 'Error', 
-        message: error.response?.data?.message || error.message || 'Server error' 
+      setResult({
+        status: 'Error',
+        message: error.response?.data?.message || error.message || 'Server error'
       });
     } finally {
       setSubmitting(false);
@@ -172,7 +171,7 @@ const ProblemWorkspace = () => {
       <div className="workspace-panel workspace-panel-left">
         <div className="panel-header">
           <div className="panel-tabs">
-            <div 
+            <div
               className={`tab-item ${leftTab === 'description' ? 'active' : ''}`}
               onClick={() => setLeftTab('description')}
             >
@@ -180,7 +179,7 @@ const ProblemWorkspace = () => {
                 <BookOpen size={14} /> Description
               </div>
             </div>
-            <div 
+            <div
               className={`tab-item ${leftTab === 'submissions' ? 'active' : ''}`}
               onClick={() => setLeftTab('submissions')}
             >
@@ -188,7 +187,7 @@ const ProblemWorkspace = () => {
                 <History size={14} /> Submissions
               </div>
             </div>
-            <div 
+            <div
               className={`tab-item ${leftTab === 'discussion' ? 'active' : ''}`}
               onClick={() => setLeftTab('discussion')}
             >
@@ -198,7 +197,7 @@ const ProblemWorkspace = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="panel-content">
           {leftTab === 'description' && (
             <div className="animate-fade-in">
@@ -208,12 +207,12 @@ const ProblemWorkspace = () => {
                   {problem.difficulty}
                 </span>
               </div>
-              
-              <div 
-                className="problem-description mb-8" 
-                dangerouslySetInnerHTML={{ __html: marked.parse(problem.description || '') }} 
+
+              <div
+                className="problem-description mb-8"
+                dangerouslySetInnerHTML={{ __html: marked.parse(problem.description || '') }}
               />
-              
+
               {problem.testCases && problem.testCases.length > 0 && (
                 <div className="examples mt-6">
                   <h3 className="text-sm font-bold mb-4 uppercase tracking-wider text-muted">Example Test Case</h3>
@@ -231,7 +230,7 @@ const ProblemWorkspace = () => {
               )}
             </div>
           )}
-          
+
           {leftTab === 'submissions' && (
             <div className="animate-fade-in">
               <h2 className="text-xl font-bold mb-6">My Submissions</h2>
@@ -259,7 +258,7 @@ const ProblemWorkspace = () => {
                           <td>{sub.points}</td>
                           <td className="text-muted text-[10px]">{new Date(sub.createdAt).toLocaleDateString()}</td>
                           <td>
-                            <button 
+                            <button
                               className="text-xs text-primary hover:underline"
                               onClick={() => {
                                 setCode(sub.code);
@@ -287,18 +286,18 @@ const ProblemWorkspace = () => {
           {leftTab === 'discussion' && (
             <div className="animate-fade-in">
               <h2 className="text-xl font-bold mb-6">Discussion</h2>
-              
+
               <form onSubmit={handleAddComment} className="mb-8">
-                <textarea 
+                <textarea
                   className="w-full bg-surface-hover border border-border-color rounded-lg p-3 text-sm min-h-[80px] mb-2 focus:border-primary outline-none transition-colors"
                   placeholder="Share your thoughts or ask a question..."
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                 />
                 <div className="flex justify-end">
-                  <button 
-                    className="submit-btn" 
-                    type="submit" 
+                  <button
+                    className="submit-btn"
+                    type="submit"
                     disabled={postingComment || !newComment.trim()}
                     style={{ padding: '4px 16px', fontSize: '0.8rem' }}
                   >
@@ -344,8 +343,8 @@ const ProblemWorkspace = () => {
       <div className="workspace-panel workspace-panel-right">
         <div className="panel-header">
           <div className="flex items-center gap-3">
-            <select 
-              value={language} 
+            <select
+              value={language}
               onChange={(e) => setLanguage(e.target.value)}
               className="bg-surface-hover text-sm border-none rounded px-2 py-1 outline-none cursor-pointer"
             >
@@ -354,12 +353,12 @@ const ProblemWorkspace = () => {
               ))}
             </select>
           </div>
-          
-          <div className="flex gap-2">
-            <button className="run-btn" onClick={handleSubmit} disabled={submitting}>
+
+          <div className="flex gap-3">
+            <button className="run-btn" onClick={() => handleSubmit(false)} disabled={submitting}>
               <Play size={14} fill="currentColor" /> Run
             </button>
-            <button className="submit-btn" onClick={handleSubmit} disabled={submitting}>
+            <button className="submit-btn" onClick={() => handleSubmit(true)} disabled={submitting}>
               {submitting ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />}
               Submit
             </button>
@@ -388,72 +387,103 @@ const ProblemWorkspace = () => {
         </div>
 
         {/* Console / Result Panel */}
-        <div className="console-panel" style={{ height: consoleOpen ? '35%' : '40px' }}>
+        <div className="console-panel" style={{ height: consoleOpen ? '350px' : '40px', flexBasis: consoleOpen ? '350px' : '40px' }}>
           <div className="console-header" onClick={() => setConsoleOpen(!consoleOpen)}>
-            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest">
-              <ConsoleIcon size={14} /> 
-              {result ? 'Submission Result' : 'Console'}
+            <div className="flex items-center gap-6 h-full">
+              <div className={`flex items-center gap-2 text-xs font-bold uppercase tracking-widest h-full border-b-2 transition-colors ${(!result || result.isRunOnly) ? 'border-primary text-main' : 'border-transparent text-muted'}`}>
+                <ConsoleIcon size={14} /> Console
+              </div>
+
             </div>
             <div className="flex items-center gap-4">
-              {result && (
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${result.status === 'Accepted' ? 'bg-accent/10 text-accent' : 'bg-danger/10 text-danger'}`}>
-                  {result.status}
-                </span>
-              )}
               {consoleOpen ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
             </div>
           </div>
-          
+
           {consoleOpen && (
             <div className="console-content">
               {submitting ? (
-                <div className="flex flex-col items-center justify-center h-full gap-2 opacity-50">
-                  <Loader2 className="animate-spin" size={24} />
-                  <p className="text-xs">Running test cases...</p>
+                <div className="flex flex-col items-center justify-center h-full gap-3 opacity-70 py-12">
+                  <Loader2 className="animate-spin text-primary" size={32} />
+                  <p className="text-sm font-medium tracking-wide">Running test cases...</p>
                 </div>
               ) : result ? (
-                <div className="animate-fade-in">
-                  <div className={`mb-4 p-4 rounded-lg border ${result.status === 'Accepted' ? 'border-accent/20 bg-accent/5' : 'border-danger/20 bg-danger/5'}`}>
-                    <h4 className={`text-sm font-bold mb-2 ${result.status === 'Accepted' ? 'text-accent' : 'text-danger'}`}>
-                      {result.status === 'Accepted' ? 'Success!' : 'Failed'}
-                    </h4>
-                    
-                    {result.status === 'Accepted' ? (
-                      <div className="text-xs grid grid-cols-2 gap-4">
-                        <div>
-                          <span className="text-muted block">Runtime</span>
-                          <span className="font-mono text-main">{result.executionTime}s</span>
-                        </div>
-                        <div>
-                          <span className="text-muted block">Memory</span>
-                          <span className="font-mono text-main">-- MB</span>
-                        </div>
-                        <div>
-                          <span className="text-muted block">Points</span>
-                          <span className="font-mono text-main">{result.points}</span>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mt-2">
-                        <pre className="text-xs text-danger bg-black/20 p-3 rounded overflow-x-auto">
-                          {result.message || 'The code did not pass all test cases.'}
-                        </pre>
-                        {result.status === 'Wrong Answer' && (
-                          <p className="text-[10px] mt-2 text-muted">Check your logic and handle all edge cases as specified in the description.</p>
-                        )}
+                <div className="animate-fade-in flex flex-col h-full">
+                  {/* Status Section */}
+                  <div className="lc-result-header">
+                    <div className={`lc-status-text ${result.status === 'Accepted' ? 'lc-status-accepted' : 'lc-status-failed'}`}>
+                      {result.status === 'Accepted' ? (result.isRunOnly ? 'Finished' : 'Accepted') : result.status || 'Failed'}
+                    </div>
+                    {result.status === 'Accepted' && (
+                      <div className="text-xs text-muted font-medium">
+                        {result.isRunOnly ? 'Sample test case passed.' : 'All test cases passed successfully.'}
                       </div>
                     )}
                   </div>
-                  
-                  {result.status !== 'Accepted' && result.error && (
-                    <div className="text-xs text-danger mt-4 p-3 bg-danger/10 rounded border border-danger/20">
-                      <strong>Server Error:</strong> {result.error}
+
+                  {/* Metrics Section */}
+                  {result.status === 'Accepted' && (
+                    <div className="lc-metrics-container">
+                      <div className="lc-metric-item">
+                        <span className="lc-metric-label">Runtime</span>
+                        <span className="lc-metric-value">{result.executionTime}s</span>
+                      </div>
+                      <div className="lc-metric-item">
+                        <span className="lc-metric-label">Memory</span>
+                        <span className="lc-metric-value">{result.memory ? `${result.memory} MB` : '-- MB'}</span>
+                      </div>
+                      {!result.isRunOnly && (
+                        <div className="lc-metric-item">
+                          <span className="lc-metric-label">Points</span>
+                          <span className="lc-metric-value text-accent">{result.points}</span>
+                        </div>
+                      )}
                     </div>
                   )}
+
+                  {/* Details Section */}
+                  <div className="lc-output-section">
+                    {result.status !== 'Accepted' ? (
+                      <div className="flex flex-col gap-4">
+                        <div className="flex flex-col">
+                          <span className="lc-output-label">Error Message</span>
+                          <pre className="lc-code-block text-danger border-danger/20 bg-danger/5">
+                            {result.message || 'The code did not pass all test cases.'}
+                          </pre>
+                        </div>
+                        {result.error && (
+                          <div className="flex flex-col">
+                            <span className="lc-output-label">System Error</span>
+                            <pre className="lc-code-block text-muted text-xs">
+                              {result.error}
+                            </pre>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-4">
+                        <div className="flex flex-col">
+                          <span className="lc-output-label">{result.isRunOnly ? 'Standard Output' : 'Result Status:- '}</span>
+                          <div className="text-sm text-main">
+                            {result.isRunOnly ? (
+                              <pre className="lc-code-block mt-2">
+                                {result.output || 'No output produced.'}
+                              </pre>
+                            ) : (
+                              'Your code was executed against all hidden test cases.'
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               ) : (
-                <div className="flex items-center justify-center h-full text-muted text-xs italic">
-                  Run your code to see the output here.
+                <div className="flex items-center justify-center h-full text-muted text-sm font-medium py-12">
+                  <div className="flex flex-col items-center gap-3 opacity-40">
+                    <ConsoleIcon size={40} />
+                    <p>Run your code to see the test results here.</p>
+                  </div>
                 </div>
               )}
             </div>
