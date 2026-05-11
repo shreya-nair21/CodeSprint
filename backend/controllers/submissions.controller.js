@@ -4,7 +4,7 @@ import { Submission, Problem, User } from '../models.js';
 //controller for submitting code
 export const submitCode = async (req, res) => {
   try {
-    const { problemId, code, languageId } = req.body;
+    const { problemId, code, languageId, runOnly } = req.body;
     const userId = req.user.id;
 
     if (!problemId || !code || !languageId) {
@@ -25,13 +25,18 @@ export const submitCode = async (req, res) => {
       62: { language: 'java', versionIndex: '4' }
     };
 
-    const runtime = jdoodleLanguages[languageId] || { language: 'python3', versionIndex: '3' }; //fallback to python3 if languageId is not found
+    const runtime = jdoodleLanguages[languageId] || { language: 'python3', versionIndex: '3' };
 
     let allPassed = true;
     let totalTime = 0;
+    let maxMemory = 0;
     let failedStatus = 'Accepted';
+    let lastResult = null;
 
-    for (const testCase of problem.testCases) {
+    // If runOnly is true, only run the first test case
+    const testCases = runOnly ? [problem.testCases[0]] : problem.testCases;
+
+    for (const testCase of testCases) {
       const options = {
         method: 'POST',
         url: 'https://api.jdoodle.com/v1/execute',
@@ -46,46 +51,54 @@ export const submitCode = async (req, res) => {
           versionIndex: runtime.versionIndex,
           stdin: testCase.input
         },
-        timeout: 10000 // 10 seconds timeout
+        timeout: 10000
       };
 
       try {
         const response = await axios.request(options);
         const result = response.data;
+        lastResult = result;
 
-        // Check if JDoodle returned an error in the body even with 200 OK
         if (result.error || result.statusCode === 429) {
           allPassed = false;
           failedStatus = result.error || 'JDoodle API Limit Reached';
           break;
         }
 
-        // Check if output matches expected output
         const actualOutput = result.output ? result.output.trim() : '';
-
         if (actualOutput !== testCase.expectedOutput.trim()) {
           allPassed = false;
           failedStatus = 'Wrong Answer';
           break;
         }
 
-        // Calculate time
         totalTime += parseFloat(result.cpuTime || 0);
+        const memKb = parseFloat(result.memory || 0);
+        const memMb = memKb / 1024;
+        if (memMb > maxMemory) maxMemory = memMb;
       } catch (err) {
         if (err.response && err.response.status === 429) {
           return res.status(429).json({ 
             message: 'JDoodle Daily Limit Reached', 
-            error: 'You have reached the daily limit of the free JDoodle API. Please try again tomorrow or use a different API key.' 
+            error: 'You have reached the daily limit of the free JDoodle API.' 
           });
         }
-        throw err; // Re-throw to be caught by the outer try-catch
+        throw err;
       }
     }
 
-    // Points calculation (example: 100 max points minus time taken)
+    if (runOnly) {
+      return res.json({
+        status: failedStatus,
+        executionTime: totalTime,
+        memory: Number(maxMemory.toFixed(2)),
+        output: lastResult?.output,
+        isRunOnly: true
+      });
+    }
+
     let points = 0;
     if (allPassed) {
-      // Award points. E.g., baseline 100, minus time * 10. Max 100, min 10.
       points = Math.max(10, 100 - Math.floor(totalTime * 10));
     }
 
@@ -96,6 +109,7 @@ export const submitCode = async (req, res) => {
       languageId,
       status: failedStatus,
       executionTime: allPassed ? totalTime : null,
+      memory: allPassed ? Number(maxMemory.toFixed(2)) : null,
       points
     });
 
