@@ -26,6 +26,7 @@ const submissionSchema = new mongoose.Schema({
   languageId: { type: Number, required: true },
   status: { type: String, required: true }, // e.g., 'Accepted', 'Wrong Answer', 'Time Limit Exceeded'
   executionTime: { type: Number },
+  memory: { type: Number },
   points: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
