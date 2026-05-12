@@ -20,10 +20,10 @@ const Home = () => {
             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#f59e0b' }} />
             <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--accent-color)' }} />
           </div>
-          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+          <div className="font-mono" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
             <span style={{ color: 'var(--primary-color)' }}>task:</span> Build a rate-limited REST API
           </div>
-          <div style={{ background: 'var(--bg-color)', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-color)', fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--text-main)', marginTop: 'auto' }}>
+          <div className="font-mono" style={{ background: 'var(--bg-color)', padding: '1rem', borderRadius: '6px', border: '1px solid var(--border-color)', fontSize: '0.85rem', color: 'var(--text-main)', marginTop: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
               <span>tests passing: 4/5</span>
               <span style={{ color: 'var(--danger-color)' }}>RateLimitError expected</span>
@@ -45,7 +45,7 @@ const Home = () => {
           <div style={{ display: 'flex', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.75rem', marginBottom: '1rem', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
             <span style={{ color: 'var(--text-main)', borderBottom: '2px solid var(--primary-color)', paddingBottom: '0.75rem', marginBottom: '-0.75rem' }}>solution.js</span>
           </div>
-          <pre style={{ fontFamily: 'monospace', fontSize: '0.85rem', color: 'var(--text-main)', lineHeight: '1.6' }}>
+          <pre className="font-mono" style={{ fontSize: '0.85rem', color: 'var(--text-main)', lineHeight: '1.6' }}>
             <span style={{ color: 'var(--secondary-color)' }}>function</span> <span style={{ color: 'var(--primary-color)' }}>twoSum</span>(nums, target) {'{\n'}
             {'  '}const map = new <span style={{ color: 'var(--secondary-color)' }}>Map</span>();{'\n'}
             {'  '}for (let i = 0; i {'<'} nums.length; i++) {'{\n'}
@@ -109,7 +109,7 @@ const Home = () => {
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem 0', borderBottom: i !== 3 ? '1px solid var(--border-color)' : 'none', color: row.isUser ? 'var(--primary-color)' : 'var(--text-main)', fontWeight: row.isUser ? '600' : '400', alignItems: 'center' }}>
               <span style={{ width: '3rem', color: row.highlight ? '#f59e0b' : 'inherit' }}>#{row.rank}</span>
               <span style={{ flex: 1 }}>{row.name}</span>
-              <span style={{ fontFamily: 'monospace' }}>{row.score}</span>
+              <span className="font-mono">{row.score}</span>
             </div>
           ))}
         </div>
@@ -118,17 +118,12 @@ const Home = () => {
   ];
 
   return (
-    <div className="container" style={{ padding: '6rem 1rem' }}>
-      <div className="text-center" style={{ maxWidth: '800px', margin: '0 auto' }}>
-        {/* <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'var(--surface-color)', border: '1px solid var(--border-color)', borderRadius: '999px', fontSize: '0.85rem', fontWeight: '500', color: 'var(--text-main)', marginBottom: '2rem', boxShadow: 'var(--shadow-sm)' }}> */}
-        {/* <span style={{ color: 'var(--accent-color)' }}>New</span> */}
-        {/* <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--border-color)' }} /> */}
-        {/* AI-Powered Insights are now live! */}
-        {/* </div> */}
-        <h1 className="text-gradient" style={{ fontSize: '4.5rem', fontWeight: '700', marginBottom: '1.5rem', letterSpacing: '-0.04em', lineHeight: '1.1' }}>
+    <div className="container" style={{ padding: '6rem 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="text-center" style={{ maxWidth: '800px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <h1 className="text-gradient" style={{ fontSize: '4.5rem', fontWeight: '700', marginBottom: '1.5rem', letterSpacing: '-0.04em', lineHeight: '1.1', textAlign: 'center' }}>
           Master Your Code.
         </h1>
-        <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '3rem', lineHeight: '1.6', maxWidth: '600px', margin: '0 auto 3rem auto' }}>
+        <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', marginBottom: '3rem', lineHeight: '1.6', maxWidth: '600px', textAlign: 'center' }}>
           CodeSprint is the modern platform for developers to practice algorithms, prepare for interviews, and compete globally.
         </p>
 
