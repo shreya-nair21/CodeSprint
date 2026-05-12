@@ -1,41 +1,62 @@
 import { Submission, User } from '../models.js';
 
-//to fetch leaderboard
-
 export const getLeaderboard = async (req, res) => {
   try {
-    // Aggregate points from submissions per user
     const leaderboard = await Submission.aggregate([
+      // Only consider accepted submissions or those with points
+      { $match: { points: { $gt: 0 } } },
+      
+      // Group by user and problem to get the best score for each problem
       {
         $group: {
-          _id: '$userId',
-          totalPoints: { $sum: '$points' }
+          _id: { userId: "$userId", problemId: "$problemId" },
+          bestPoints: { $max: "$points" }
         }
       },
+      
+      // Group by user to sum their best scores
       {
-        $sort: { totalPoints: -1 }
+        $group: {
+          _id: "$_id.userId",
+          totalPoints: { $sum: "$bestPoints" },
+          problemsSolved: { $count: {} }
+        }
       },
+      
+      // Sort by points descending
+      { $sort: { totalPoints: -1 } },
+      
+      // Limit to top 50
+      { $limit: 50 },
+      
+      // Join with User model
       {
-        $limit: 100 // Top 100 users
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "userInfo"
+        }
+      },
+      
+      // Unwind user info
+      { $unwind: "$userInfo" },
+      
+      // Project final fields
+      {
+        $project: {
+          _id: 1,
+          totalPoints: 1,
+          problemsSolved: 1,
+          username: "$userInfo.username",
+          email: "$userInfo.email"
+        }
       }
     ]);
 
-    // Populate user details
-    const populatedLeaderboard = await User.populate(leaderboard, {
-      path: '_id',
-      select: 'username'
-    });
-
-    // Format the response
-    const result = populatedLeaderboard.map((entry, index) => ({
-      rank: index + 1,
-      userId: entry._id._id,
-      username: entry._id.username,
-      totalPoints: entry.totalPoints
-    }));
-
-    res.json(result);
+    res.json(leaderboard);
   } catch (error) {
+    console.error('Leaderboard error:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
