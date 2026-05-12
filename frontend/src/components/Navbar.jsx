@@ -37,6 +37,7 @@ const Navbar = () => {
               <>
                 <Link to="/problems" className="hover:text-main">Problems</Link>
                 <Link to="/leaderboard" className="hover:text-main">Leaderboard</Link>
+                <Link to="/submissions" className="hover:text-main">Submissions</Link>
               </>
             )}
           </div>
@@ -49,7 +50,6 @@ const Navbar = () => {
           
           {user ? (
             <>
-              <Link to="/submissions" style={{ color: 'var(--text-muted)' }}>Submissions</Link>
               <div className="flex items-center" style={{ gap: '1.25rem', paddingLeft: '1.25rem', borderLeft: '1px solid var(--border-color)' }}>
                 <span className="flex items-center" style={{ gap: '0.5rem', color: 'var(--text-main)' }}>
                   <User size={16} />
