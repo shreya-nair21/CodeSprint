@@ -39,90 +39,62 @@ const Leaderboard = () => {
   }
 
   return (
-    <div className="container py-12 max-w-4xl">
-      <div className="text-center mb-12 animate-fade-in">
-        <h1 className="text-4xl font-bold mb-4">Leaderboard</h1>
-        <p className="text-muted text-lg">Top performers in the CodeSprint community</p>
+    <div className="container py-12 max-w-4xl mx-auto">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold text-main flex items-center gap-2">
+          <Trophy size={24} className="text-primary" />
+          Leaderboard
+        </h1>
+        <div className="bg-primary/10 text-primary px-4 py-2 rounded-lg text-sm font-semibold">
+          {leaderboard.length} Developers
+        </div>
       </div>
 
-      <div className="panel overflow-hidden animate-fade-in" style={{ animationDelay: '0.1s' }}>
-        <div className="overflow-x-auto">
-          <table className="submissions-table">
-            <thead>
-              <tr>
-                <th className="w-20 text-center"><Hash size={14} className="inline mr-1" /> Rank</th>
-                <th><User size={14} className="inline mr-1" /> User</th>
-                <th className="text-center"><Target size={14} className="inline mr-1" /> Solved</th>
-                <th className="text-right"><Trophy size={14} className="inline mr-1" /> Points</th>
-              </tr>
-            </thead>
-            <tbody>
-              {leaderboard.length > 0 ? (
-                leaderboard.map((user, index) => (
-                  <tr key={user._id} className={index < 3 ? 'bg-surface-hover/30' : ''}>
-                    <td className="text-center">
-                      <div className="flex items-center justify-center h-10 w-10 mx-auto">
-                        {getRankIcon(index)}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs text-white ${
-                          index === 0 ? 'bg-yellow-500' : 
-                          index === 1 ? 'bg-gray-400' : 
-                          index === 2 ? 'bg-amber-600' : 'bg-primary'
-                        }`}>
-                          {user.username.charAt(0).toUpperCase()}
-                        </div>
-                        <span className="font-semibold text-main">{user.username}</span>
-                        {index === 0 && <span className="badge badge-easy text-[10px] py-0.5 px-1.5">Top Coder</span>}
-                      </div>
-                    </td>
-                    <td className="text-center">
-                      <span className="font-mono text-main">{user.problemsSolved}</span>
-                    </td>
-                    <td className="text-right">
-                      <span className="text-lg font-bold text-accent font-mono">{user.totalPoints}</span>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" className="text-center py-12 text-muted italic">
-                    No submissions found. Be the first to top the leaderboard!
+      <div className="bg-surface rounded-xl border border-border-color overflow-hidden shadow-lg">
+        <table className="w-full text-left border-collapse">
+          <thead className="bg-surface-hover">
+            <tr>
+              <th className="px-6 py-4 font-bold text-main uppercase text-[11px] tracking-wider w-24">Rank</th>
+              <th className="px-6 py-4 font-bold text-main uppercase text-[11px] tracking-wider">Username</th>
+              <th className="px-6 py-4 font-bold text-main uppercase text-[11px] tracking-wider text-center">Problems Solved</th>
+              <th className="px-6 py-4 font-bold text-main uppercase text-[11px] tracking-wider text-right">Total Points</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border-color">
+            {leaderboard.length > 0 ? (
+              leaderboard.map((user, index) => (
+                <tr key={user._id} className="hover:bg-surface-hover/50 transition-colors">
+                  <td className="px-6 py-4">
+                    <span className={`flex items-center justify-center w-8 h-8 rounded-full font-bold ${
+                      index === 0 ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-500' : 
+                      index === 1 ? 'bg-gray-400/20 text-gray-600 dark:text-gray-400' : 
+                      index === 2 ? 'bg-orange-500/20 text-orange-600 dark:text-orange-500' : 'text-main'
+                    }`}>
+                      {index + 1}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 font-bold text-main">
+                    {user.username}
+                  </td>
+                  <td className="px-6 py-4 text-center text-main">
+                    {user.problemsSolved}
+                  </td>
+                  <td className="px-6 py-4 text-right font-mono font-bold text-primary">
+                    {user.totalPoints.toLocaleString()}
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" className="px-6 py-20 text-center text-muted italic">
+                  No submissions yet. Be the first to join the leaderboard!
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
-      
-      {/* Community Stats Footer */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-        <div className="panel p-6 text-center">
-          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <User className="text-primary" size={24} />
-          </div>
-          <h3 className="text-2xl font-bold">{leaderboard.length}</h3>
-          <p className="text-sm text-muted">Active Users</p>
-        </div>
-        <div className="panel p-6 text-center">
-          <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Trophy className="text-accent" size={24} />
-          </div>
-          <h3 className="text-2xl font-bold">{leaderboard.reduce((acc, curr) => acc + curr.totalPoints, 0)}</h3>
-          <p className="text-sm text-muted">Total Points Awarded</p>
-        </div>
-        <div className="panel p-6 text-center">
-          <div className="w-12 h-12 bg-secondary-color/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Target className="text-secondary-color" size={24} />
-          </div>
-          <h3 className="text-2xl font-bold">{leaderboard.reduce((acc, curr) => acc + curr.problemsSolved, 0)}</h3>
-          <p className="text-sm text-muted">Challenges Conquered</p>
-        </div>
       </div>
-    </div>
   );
 };
 
