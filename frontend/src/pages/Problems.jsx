@@ -42,10 +42,13 @@ const Problems = () => {
 
   return (
     <div className="container" style={{ padding: '3rem 1rem' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="flex justify-between items-center mb-8 gap-6 flex-wrap">
         <div>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: '700', letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>Problem Library</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Sharpen your skills with our collection of algorithmic challenges.</p>
+          <h1 className="text-2xl font-bold text-main flex items-center gap-2">
+            <Code2 size={24} className="text-primary" />
+            Problem Library
+          </h1>
+          <p className="text-sm text-muted mt-1">Sharpen your skills with our collection of algorithmic challenges.</p>
         </div>
 
         <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
@@ -75,9 +78,9 @@ const Problems = () => {
             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--border-color)', background: 'rgba(0,0,0,0.02)' }}>
-                  <th style={{ padding: '1.25rem 1.5rem', fontWeight: '600', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Title</th>
-                  <th style={{ padding: '1.25rem 1.5rem', fontWeight: '600', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: '150px' }}>Difficulty</th>
-                  <th style={{ padding: '1.25rem 1.5rem', fontWeight: '600', color: 'var(--text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: '120px', textAlign: 'right' }}>Action</th>
+                  <th style={{ padding: '1.25rem 1.5rem', fontWeight: '700', color: 'var(--text-main)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Title</th>
+                  <th style={{ padding: '1.25rem 1.5rem', fontWeight: '700', color: 'var(--text-main)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: '150px' }}>Difficulty</th>
+                  <th style={{ padding: '1.25rem 1.5rem', fontWeight: '700', color: 'var(--text-main)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', width: '120px', textAlign: 'right' }}>Action</th>
                 </tr>
               </thead>
               <tbody>
