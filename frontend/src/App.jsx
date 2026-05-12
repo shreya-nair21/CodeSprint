@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Problems from './pages/Problems';
 import ProblemWorkspace from './pages/ProblemWorkspace';
 import Leaderboard from './pages/Leaderboard';
+import Submissions from './pages/Submissions';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -17,8 +18,6 @@ const ProtectedRoute = ({ children }) => {
   
   return children;
 };
-
-const Submissions = () => <div className="container" style={{ padding: '2rem' }}><h1 className="text-center">My Submissions (Coming Soon)</h1></div>;
 
 function App() {
   return (
