@@ -51,10 +51,10 @@ const Navbar = () => {
           {user ? (
             <>
               <div className="flex items-center" style={{ gap: '1.25rem', paddingLeft: '1.25rem', borderLeft: '1px solid var(--border-color)' }}>
-                <span className="flex items-center" style={{ gap: '0.5rem', color: 'var(--text-main)' }}>
+                <Link to="/profile" className="flex items-center hover:text-primary transition-colors" style={{ gap: '0.5rem', color: 'var(--text-main)' }}>
                   <User size={16} />
                   {user.username}
-                </span>
+                </Link>
                 <button onClick={handleLogout} className="flex items-center" style={{ gap: '0.5rem', color: 'var(--text-muted)', background: 'transparent' }}>
                   <LogOut size={16} />
                   Logout
