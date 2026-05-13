@@ -99,7 +99,15 @@ export const submitCode = async (req, res) => {
 
     let points = 0;
     if (allPassed) {
-      points = Math.max(10, 100 - Math.floor(totalTime * 10));
+      const basePoints = {
+        'Easy': 50,
+        'Medium': 100,
+        'Hard': 200
+      };
+      const difficultyBonus = basePoints[problem.difficulty] || 50;
+      // Bonus for speed (faster code = more points, up to 20% extra)
+      const speedBonus = Math.max(0, 20 - Math.floor(totalTime * 5));
+      points = difficultyBonus + speedBonus;
     }
 
     const submission = await Submission.create({
