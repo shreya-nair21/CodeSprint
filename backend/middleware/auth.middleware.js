@@ -39,3 +39,24 @@ export const adminRoute = async (req, res, next) => {
     res.status(500).json({ message: 'Server error in admin middleware', error: error.message });
   }
 };
+// optional auth middleware (doesn't block if not logged in)
+export const optionalProtect = async (req, res, next) => {
+  try {
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (token) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+        req.user = decoded;
+      } catch (error) {
+        // Just continue without user info
+      }
+    }
+    next();
+  } catch (error) {
+    next();
+  }
+};
