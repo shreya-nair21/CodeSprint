@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
-import { Search, Code2, AlertCircle } from 'lucide-react';
+import { Search, Code2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Problems = () => {
@@ -9,13 +9,16 @@ const Problems = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchProblems = async () => {
+      setLoading(true);
       try {
-        // Fetch all problems using the shared axios instance
-        const response = await api.get('/problems');
-        setProblems(response.data);
+        const response = await api.get(`/problems?page=${page}&limit=20&search=${searchQuery}`);
+        setProblems(response.data.problems);
+        setTotalPages(response.data.pages);
       } catch (err) {
         setError('Failed to load problems. Please try again later.');
         console.error('Error fetching problems:', err);
@@ -24,18 +27,22 @@ const Problems = () => {
       }
     };
 
-    fetchProblems();
-  }, []);
+    const delayDebounceFn = setTimeout(() => {
+      fetchProblems();
+    }, 300);
 
-  const filteredProblems = problems.filter(p =>
-    p.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-  //design of problem table
+    return () => clearTimeout(delayDebounceFn);
+  }, [page, searchQuery]);
+
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    setPage(1); // Reset to first page on search
+  };
   const getDifficultyColor = (diff) => {
     switch (diff) {
-      case 'Easy': return 'var(--accent-color)'; // Green
-      case 'Medium': return '#f59e0b'; // Yellow/Orange
-      case 'Hard': return 'var(--danger-color)'; // Red
+      case 'Easy': return 'var(--accent-color)';
+      case 'Medium': return '#f59e0b';
+      case 'Hard': return 'var(--danger-color)';
       default: return 'var(--text-main)';
     }
   };
@@ -59,7 +66,7 @@ const Problems = () => {
             type="text"
             placeholder="Search problems..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearch}
             style={{ paddingLeft: '2.5rem' }}
           />
         </div>
@@ -84,17 +91,23 @@ const Problems = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredProblems.length === 0 ? (
+                {problems.length === 0 ? (
                   <tr>
                     <td colSpan="3" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>No problems found.</td>
                   </tr>
                 ) : (
-                  filteredProblems.map((problem) => (
+                  problems.map((problem) => (
                     <tr key={problem._id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background-color 0.2s ease' }} className="hover:bg-surface-hover">
                       <td style={{ padding: '1rem 1.5rem', fontWeight: '500' }}>
                         <Link to={`/problems/${problem._id}`} style={{ color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <Code2 size={18} style={{ color: 'var(--primary-color)' }} />
-                          {problem.title}
+                          <div className="flex items-center gap-2">
+                            {problem.solved ? (
+                              <CheckCircle2 size={18} className="text-accent" />
+                            ) : (
+                              <Code2 size={18} style={{ color: 'var(--primary-color)' }} />
+                            )}
+                            {problem.title}
+                          </div>
                         </Link>
                       </td>
                       <td style={{ padding: '1rem 1.5rem' }}>
@@ -110,7 +123,7 @@ const Problems = () => {
                         </span>
                       </td>
                       <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>
-                        <Link to={`/problems/${problem._id}`} className="btn-primary" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', borderRadius: '6px', background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)' }}>
+                        <Link to={`/problems/${problem._id}`} className="btn-secondary" style={{ padding: '0.4rem 1rem', fontSize: '0.85rem' }}>
                           Solve
                         </Link>
                       </td>
@@ -121,6 +134,26 @@ const Problems = () => {
             </table>
           </div>
         )}
+      </div>
+
+      <div className="flex justify-center items-center gap-4 mt-8">
+        <button 
+          onClick={() => setPage(p => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="btn-secondary"
+        >
+          Previous
+        </button>
+        <span className="text-sm font-medium text-muted">
+          Page <span className="text-main font-bold">{page}</span> of {totalPages}
+        </span>
+        <button 
+          onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+          className="btn-secondary"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
