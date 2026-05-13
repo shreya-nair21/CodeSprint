@@ -14,7 +14,7 @@
   
   --text-main: #111827;
   --text-muted: #6b7280;
-  --border-color: rgba(0, 0, 0, 0.1);
+  --border-color: rgba(0, 0, 0, 0.15);
   --nav-bg: rgba(255, 255, 255, 0.8);
   
   /* Grid Background Variables (Light) */
@@ -38,7 +38,7 @@
   
   --text-main: #ededed;
   --text-muted: #a1a1aa;
-  --border-color: rgba(255, 255, 255, 0.08);
+  --border-color: rgba(255, 255, 255, 0.12);
   --nav-bg: rgba(11, 14, 20, 0.8);
   
   /* Grid Background Variables (Dark) */
@@ -136,10 +136,32 @@ button {
   padding: 0.6rem 1.2rem;
   border-radius: 6px;
   font-weight: 500;
+  border: 1px solid var(--text-main);
 }
 
 .btn-primary:hover {
-  background: #d4d4d8;
+  background: var(--text-muted);
+  border-color: var(--text-muted);
+  color: var(--bg-color);
+}
+
+.btn-secondary {
+  background: var(--surface-color);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface-hover);
+  border-color: var(--text-muted);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* Custom Scrollbar */
