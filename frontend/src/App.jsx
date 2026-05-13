@@ -8,6 +8,7 @@ import Problems from './pages/Problems';
 import ProblemWorkspace from './pages/ProblemWorkspace';
 import Leaderboard from './pages/Leaderboard';
 import Submissions from './pages/Submissions';
+import Profile from './pages/Profile';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/problems/:id" element={<ProtectedRoute><ProblemWorkspace /></ProtectedRoute>} />
                 <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
                 <Route path="/submissions" element={<ProtectedRoute><Submissions /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               </Routes>
             </main>
           </div>
