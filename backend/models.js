@@ -21,6 +21,8 @@ const problemSchema = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   difficulty: { type: String, enum: ['Easy', 'Medium', 'Hard'], required: true },
+  tags: [{ type: String }],
+  editorial: { type: String, default: '' },
   testCases: [{
     input: { type: String, required: true },
     expectedOutput: { type: String, required: true }
