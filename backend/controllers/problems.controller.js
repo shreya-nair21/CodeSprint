@@ -11,11 +11,11 @@ export const getAllProblems = async (req, res) => {
     const tags = req.query.tags;
 
     const query = search ? { title: { $regex: search, $options: 'i' } } : {};
-    
+
     if (difficulty) {
       query.difficulty = difficulty;
     }
-    
+
     if (tags) {
       // Split by comma and find problems containing all specified tags
       query.tags = { $all: tags.split(',') };
@@ -26,12 +26,12 @@ export const getAllProblems = async (req, res) => {
       .select('-testCases.expectedOutput')
       .skip(skip)
       .limit(limit);
-    
+
     let solvedProblemIds = new Set();
     if (req.user) {
-      const submissions = await Submission.find({ 
-        userId: req.user.id, 
-        status: 'Accepted' 
+      const submissions = await Submission.find({
+        userId: req.user.id,
+        status: 'Accepted'
       }).select('problemId');
       solvedProblemIds = new Set(submissions.map(s => s.problemId.toString()));
     }
@@ -89,13 +89,13 @@ export const createProblem = async (req, res) => {
 export const updateProblem = async (req, res) => {
   try {
     const { title, description, difficulty, tags, editorial, testCases } = req.body;
-    
+
     const problem = await Problem.findByIdAndUpdate(
-      req.params.id, 
-      { title, description, difficulty, tags, editorial, testCases }, 
+      req.params.id,
+      { title, description, difficulty, tags, editorial, testCases },
       { new: true, runValidators: true }
     );
-    
+
     if (!problem) {
       return res.status(404).json({ message: 'Problem not found' });
     }
