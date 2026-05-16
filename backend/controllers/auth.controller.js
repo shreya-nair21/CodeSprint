@@ -141,3 +141,46 @@ export const getUserStats = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
+// controller for updating user profile
+export const updateProfile = async (req, res) => {
+  try {
+    const { username, bio, profilePic, location, company, website, name, birthday, linkedin, github } = req.body;
+    const user = await User.findById(req.user.id);
+
+    if (user) {
+      user.username = username || user.username;
+      user.bio = bio !== undefined ? bio : user.bio;
+      user.profilePic = profilePic !== undefined ? profilePic : user.profilePic;
+      user.location = location !== undefined ? location : user.location;
+      user.company = company !== undefined ? company : user.company;
+      user.website = website !== undefined ? website : user.website;
+      user.name = name !== undefined ? name : user.name;
+      user.birthday = birthday ? birthday : (birthday === '' ? null : user.birthday);
+      user.linkedin = linkedin !== undefined ? linkedin : user.linkedin;
+      user.github = github !== undefined ? github : user.github;
+
+      const updatedUser = await user.save();
+
+      res.json({
+        _id: updatedUser._id,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        role: updatedUser.role,
+        bio: updatedUser.bio,
+        profilePic: updatedUser.profilePic,
+        location: updatedUser.location,
+        company: updatedUser.company,
+        website: updatedUser.website,
+        name: updatedUser.name,
+        birthday: updatedUser.birthday,
+        linkedin: updatedUser.linkedin,
+        github: updatedUser.github,
+        token: generateToken(updatedUser._id),
+      });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
