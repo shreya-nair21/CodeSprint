@@ -5,6 +5,15 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   role: { type: String, default: 'user' },
+  bio: { type: String, default: '' },
+  profilePic: { type: String, default: '' },
+  location: { type: String, default: '' },
+  company: { type: String, default: '' },
+  website: { type: String, default: '' },
+  name: { type: String, default: '' },
+  birthday: { type: Date },
+  linkedin: { type: String, default: '' },
+  github: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 
