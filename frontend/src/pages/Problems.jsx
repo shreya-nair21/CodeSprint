@@ -25,7 +25,7 @@ const Problems = () => {
           ...(difficultyFilter && { difficulty: difficultyFilter }),
           ...(tagFilter && { tags: tagFilter })
         }).toString();
-        
+
         const response = await api.get(`/problems?${queryParams}`);
         setProblems(response.data.problems);
         setTotalPages(response.data.pages);
@@ -81,9 +81,9 @@ const Problems = () => {
               style={{ paddingLeft: '2.5rem', width: '100%' }}
             />
           </div>
-          
-          <select 
-            value={difficultyFilter} 
+
+          <select
+            value={difficultyFilter}
             onChange={(e) => { setDifficultyFilter(e.target.value); setPage(1); }}
             className="bg-surface-hover border border-border-color rounded p-2 outline-none text-sm h-[40px]"
           >
@@ -177,7 +177,7 @@ const Problems = () => {
       </div>
 
       <div className="flex justify-center items-center gap-4 mt-8">
-        <button 
+        <button
           onClick={() => setPage(p => Math.max(1, p - 1))}
           disabled={page === 1}
           className="btn-secondary"
@@ -187,7 +187,7 @@ const Problems = () => {
         <span className="text-sm font-medium text-muted">
           Page <span className="text-main font-bold">{page}</span> of {totalPages}
         </span>
-        <button 
+        <button
           onClick={() => setPage(p => Math.min(totalPages, p + 1))}
           disabled={page === totalPages}
           className="btn-secondary"
