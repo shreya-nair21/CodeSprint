@@ -195,6 +195,14 @@ const ProblemWorkspace = () => {
                 <MessageSquare size={14} /> Discussion
               </div>
             </div>
+            <div
+              className={`tab-item ${leftTab === 'editorial' ? 'active' : ''}`}
+              onClick={() => setLeftTab('editorial')}
+            >
+              <div className="flex items-center gap-2">
+                <Info size={14} /> Editorial
+              </div>
+            </div>
           </div>
         </div>
 
@@ -332,6 +340,23 @@ const ProblemWorkspace = () => {
                 <div className="text-center py-12 text-muted">
                   <MessageSquare size={48} className="mx-auto mb-4 opacity-20" />
                   <p>No comments yet. Be the first to start the discussion!</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {leftTab === 'editorial' && (
+            <div className="animate-fade-in">
+              <h2 className="text-xl font-bold mb-6">Solution & Editorial</h2>
+              {problem.editorial ? (
+                <div
+                  className="problem-description mb-8"
+                  dangerouslySetInnerHTML={{ __html: marked.parse(problem.editorial) }}
+                />
+              ) : (
+                <div className="text-center py-12 text-muted">
+                  <Info size={48} className="mx-auto mb-4 opacity-20" />
+                  <p>No editorial available for this problem yet.</p>
                 </div>
               )}
             </div>
