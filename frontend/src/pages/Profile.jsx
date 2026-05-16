@@ -1,201 +1,326 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import { 
   User as UserIcon, 
-  Mail, 
-  Calendar, 
-  Trophy, 
-  CheckCircle2, 
-  Clock, 
-  Award,
-  ChevronRight,
+  MapPin, 
+  Globe, 
+  Briefcase,
+  Edit2,
+  Save,
+  X,
   Loader2,
-  TrendingUp,
-  Target
+  Check,
+  Calendar,
+  Link,
+  Code,
+  Trash2,
+  Camera
 } from 'lucide-react';
 
 const Profile = () => {
-  const { user } = useAuth();
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, updateUserData } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const fileInputRef = useRef(null);
+  
+  // Form State
+  const [formData, setFormData] = useState({
+    name: user?.name || '',
+    username: user?.username || '',
+    bio: user?.bio || '',
+    location: user?.location || '',
+    company: user?.company || '',
+    website: user?.website || '',
+    profilePic: user?.profilePic || '',
+    birthday: user?.birthday ? new Date(user.birthday).toISOString().split('T')[0] : '',
+    linkedin: user?.linkedin || '',
+    github: user?.github || ''
+  });
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    if (user && !isEditing) {
+      setFormData({
+        name: user.name || '',
+        username: user.username || '',
+        bio: user.bio || '',
+        location: user.location || '',
+        company: user.company || '',
+        website: user.website || '',
+        profilePic: user.profilePic || '',
+        birthday: user.birthday ? new Date(user.birthday).toISOString().split('T')[0] : '',
+        linkedin: user.linkedin || '',
+        github: user.github || ''
+      });
+    }
+  }, [user]);
 
-  const fetchStats = async () => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, profilePic: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhoto = () => {
+    setFormData({ ...formData, profilePic: '' });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      const response = await api.get('/auth/stats');
-      setStats(response.data);
+      const response = await api.put('/auth/profile', formData);
+      updateUserData(response.data);
+      setIsEditing(false);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Make sure image is not too large.');
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="animate-spin text-primary" size={40} />
-      </div>
-    );
-  }
-
-  const StatCard = ({ title, value, icon: Icon, color }) => (
-    <div className="bg-surface p-6 rounded-xl border border-border-color shadow-sm">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`p-3 rounded-lg bg-${color}/10 text-${color}`}>
-          <Icon size={24} />
-        </div>
-        <span className="text-xs font-bold text-muted uppercase tracking-wider">{title}</span>
-      </div>
-      <div className="text-3xl font-bold text-main">{value}</div>
-    </div>
-  );
-
-  const ProgressRing = ({ current, total, label, color }) => {
-    const percentage = total > 0 ? Math.round((current / total) * 100) : 0;
-    return (
-      <div className="flex flex-col items-center">
-        <div className="relative w-24 h-24 mb-3">
-          <svg className="w-full h-full transform -rotate-90">
-            <circle
-              cx="48" cy="48" r="40"
-              stroke="currentColor"
-              strokeWidth="8"
-              fill="transparent"
-              style={{ opacity: 0.1 }}
-              className="text-main"
-            />
-            <circle
-              cx="48" cy="48" r="40"
-              stroke="currentColor"
-              strokeWidth="8"
-              fill="transparent"
-              strokeDasharray={251.2}
-              strokeDashoffset={251.2 - (251.2 * percentage) / 100}
-              className={`text-${color} transition-all duration-1000 ease-out`}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center flex-col">
-            <span className="text-xl font-bold text-main">{current}</span>
-            <span className="text-[10px] text-muted">/{total}</span>
-          </div>
-        </div>
-        <span className="text-xs font-semibold text-muted">{label}</span>
-      </div>
-    );
-  };
-
   return (
-    <div className="container py-12 max-w-6xl">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="container py-8 max-w-4xl mx-auto">
+      <form onSubmit={handleSubmit} className="bg-surface rounded-2xl border border-border-color shadow-sm p-6 md:p-10 w-full">
         
-        {/* Left Column: User Profile info */}
-        <div className="lg:col-span-1 space-y-8">
-          <div className="bg-surface rounded-2xl border border-border-color p-8 shadow-sm">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-4 border-4 border-surface shadow-lg">
-                <UserIcon size={48} />
-              </div>
-              <h2 className="text-2xl font-bold text-main">{user?.username}</h2>
-              <p className="text-muted text-sm mb-6">Software Engineer</p>
-              
-              <div className="w-full space-y-4 pt-6 border-t border-border-color">
-                <div className="flex items-center gap-3 text-sm text-muted">
-                  <Mail size={16} />
-                  <span>{user?.email}</span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-muted">
-                  <Calendar size={16} />
-                  <span>Joined {new Date(user?.createdAt).toLocaleDateString()}</span>
-                </div>
-              </div>
-              
-              <button className="w-full mt-8 btn-secondary text-sm font-semibold transition-colors">
-                Edit Profile
-              </button>
-            </div>
-          </div>
+        {/* Top Action Bar (In-Flow, No Overlap) */}
+        <div className="flex justify-end w-full mb-4">
+          <div className="flex items-center gap-3">
+            {success && (
+              <span className="text-sm font-semibold text-accent flex items-center gap-1 bg-accent/10 px-3 py-1.5 rounded-lg">
+                <Check size={16} /> Saved
+              </span>
+            )}
 
-          <div className="bg-surface rounded-2xl border border-border-color p-6 shadow-sm">
-            <h3 className="text-sm font-bold text-main uppercase tracking-widest mb-6 flex items-center gap-2">
-              <Award size={16} className="text-primary" /> Achievements
-            </h3>
-            <div className="grid grid-cols-4 gap-4">
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} className="aspect-square rounded-full bg-surface-hover border border-border-color flex items-center justify-center grayscale opacity-30 hover:grayscale-0 hover:opacity-100 transition-all cursor-help" title="Locked Achievement">
-                  <Trophy size={20} />
-                </div>
-              ))}
-            </div>
+            {!isEditing ? (
+              <button 
+                type="button" 
+                onClick={() => setIsEditing(true)} 
+                className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg"
+              >
+                <Edit2 size={16} /> Edit Profile
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <button 
+                  type="button" 
+                  onClick={() => setIsEditing(false)} 
+                  className="btn-secondary flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
+                  <X size={16} /> Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg"
+                >
+                  {loading ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />} Save
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Right Column: Stats & Activity */}
-        <div className="lg:col-span-2 space-y-8">
+        {/* Centered Profile Header */}
+        <div className="flex flex-col items-center text-center w-full">
           
-          {/* Quick Stats Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <StatCard title="Total Solved" value={stats?.totalSolved} icon={CheckCircle2} color="accent" />
-            <StatCard title="Global Points" value={stats?.totalPoints} icon={Target} color="primary" />
-            <StatCard title="Accuracy" value="84%" icon={TrendingUp} color="orange" />
+          {/* Avatar - Strictly Sized */}
+          <div 
+            className="w-32 h-32 shrink-0 flex-none rounded-2xl border border-border-color shadow-sm bg-surface-hover flex items-center justify-center overflow-hidden mb-4"
+            style={{ minWidth: '128px', minHeight: '128px', maxWidth: '128px', maxHeight: '128px', borderRadius: '16px' }}
+          >
+            {formData.profilePic ? (
+              <img 
+                src={formData.profilePic} 
+                alt="Profile" 
+                className="w-full h-full object-cover block" 
+                style={{ borderRadius: '16px' }}
+              />
+            ) : (
+              <UserIcon size={56} className="text-muted opacity-50" />
+            )}
           </div>
 
-          {/* Difficulty Breakdown */}
-          <div className="bg-surface rounded-2xl border border-border-color p-8 shadow-sm">
-            <div className="flex justify-between items-center mb-8">
-              <h3 className="text-lg font-bold text-main">Solved Problems</h3>
-              <div className="text-sm text-muted font-medium">
-                Total: <span className="text-main font-bold">{stats?.totalSolved}</span> / {stats?.totalProblems}
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 items-center">
-              <ProgressRing current={stats?.easySolved} total={stats?.easyCount} label="Easy" color="accent" />
-              <ProgressRing current={stats?.mediumSolved} total={stats?.mediumCount} label="Medium" color="orange" />
-              <ProgressRing current={stats?.hardSolved} total={stats?.hardCount} label="Hard" color="danger" />
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="bg-surface rounded-2xl border border-border-color overflow-hidden shadow-sm">
-            <div className="p-6 border-b border-border-color flex justify-between items-center">
-              <h3 className="text-lg font-bold text-main">Recent Activity</h3>
-              <button className="text-xs font-bold text-primary hover:underline">View All</button>
-            </div>
-            <div className="divide-y divide-border-color">
-              {stats?.recentActivity && stats.recentActivity.length > 0 ? (
-                stats.recentActivity.map((activity, idx) => (
-                  <div key={idx} className="p-4 hover:bg-surface-hover transition-colors flex items-center justify-between group">
-                    <div className="flex items-center gap-4">
-                      <div className={`p-2 rounded-lg ${activity.status === 'Accepted' ? 'bg-accent/10 text-accent' : 'bg-danger/10 text-danger'}`}>
-                        {activity.status === 'Accepted' ? <CheckCircle2 size={16} /> : <Clock size={16} />}
-                      </div>
-                      <div>
-                        <div className="text-sm font-bold text-main group-hover:text-primary transition-colors">{activity.problemTitle}</div>
-                        <div className="text-[10px] text-muted uppercase font-bold tracking-wider">{new Date(activity.createdAt).toLocaleDateString()}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-xs font-bold text-main">+{activity.points || 0} pts</div>
-                      <ChevronRight size={14} className="text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="p-12 text-center text-muted">
-                  <Clock size={48} className="mx-auto mb-4 opacity-10" />
-                  <p>No recent activity found.</p>
-                </div>
+          {/* Photo Actions */}
+          {isEditing && (
+            <div className="flex flex-wrap justify-center gap-3 mb-6">
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                className="hidden" 
+                accept="image/*" 
+                onChange={handleFileChange} 
+              />
+              <button 
+                type="button" 
+                onClick={() => fileInputRef.current?.click()} 
+                className="btn-secondary text-sm flex items-center gap-2 rounded-lg py-1.5 px-3"
+              >
+                <Camera size={14} /> Change
+              </button>
+              {formData.profilePic && (
+                <button 
+                  type="button" 
+                  onClick={handleRemovePhoto} 
+                  className="btn-secondary text-danger hover:border-danger hover:bg-danger/10 text-sm flex items-center gap-2 rounded-lg py-1.5 px-3"
+                >
+                  <Trash2 size={14} /> Remove
+                </button>
               )}
             </div>
-          </div>
+          )}
+
+          {/* User Text Info */}
+          {isEditing ? (
+            <div className="w-full max-w-xl space-y-4 text-left mb-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-muted font-bold uppercase tracking-wider mb-1 block">Full Name</label>
+                  <input type="text" name="name" value={formData.name} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-xl px-4 py-2 text-main text-sm focus:border-primary outline-none transition-colors" placeholder="Name" />
+                </div>
+                <div>
+                  <label className="text-xs text-muted font-bold uppercase tracking-wider mb-1 block">Username</label>
+                  <input type="text" name="username" value={formData.username} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-xl px-4 py-2 text-main text-sm focus:border-primary outline-none transition-colors" placeholder="Username" required />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-muted font-bold uppercase tracking-wider mb-1 block">About Me</label>
+                <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  className="w-full bg-surface-hover rounded-xl p-4 border border-border-color outline-none focus:border-primary transition-colors text-main resize-none h-24 text-sm leading-relaxed"
+                  placeholder="Write a short bio about yourself..."
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="mb-8 w-full max-w-2xl">
+              <h1 className="text-3xl font-extrabold text-main">{user?.name || user?.username}</h1>
+              <p className="text-muted text-lg font-medium">@{user?.username}</p>
+              
+              <div className="mt-4 mx-auto">
+                {user?.bio ? (
+                  <p className="text-main text-[15px] leading-relaxed">{user.bio}</p>
+                ) : (
+                  <p className="text-muted italic text-[14px]">No bio provided yet.</p>
+                )}
+              </div>
+            </div>
+          )}
 
         </div>
-      </div>
+
+        {/* Divider */}
+        <div className="w-full h-px bg-border-color my-4"></div>
+
+        {/* Details Grid */}
+        <div className="w-full text-left pt-6">
+          <h3 className="text-sm font-bold text-muted uppercase tracking-widest mb-6">Profile Details</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+            
+            {/* Detail Items */}
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-surface-hover flex items-center justify-center text-muted shrink-0 border border-border-color/50">
+                <Briefcase size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-muted font-bold uppercase tracking-wider mb-0.5">Company</p>
+                {isEditing ? (
+                  <input type="text" name="company" value={formData.company} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-lg px-3 py-1.5 text-sm text-main focus:border-primary outline-none" placeholder="Company" />
+                ) : (
+                  <p className="text-[14px] text-main font-semibold truncate">{user?.company || '---'}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-surface-hover flex items-center justify-center text-muted shrink-0 border border-border-color/50">
+                <MapPin size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-muted font-bold uppercase tracking-wider mb-0.5">Location</p>
+                {isEditing ? (
+                  <input type="text" name="location" value={formData.location} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-lg px-3 py-1.5 text-sm text-main focus:border-primary outline-none" placeholder="Location" />
+                ) : (
+                  <p className="text-[14px] text-main font-semibold truncate">{user?.location || '---'}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-surface-hover flex items-center justify-center text-muted shrink-0 border border-border-color/50">
+                <Calendar size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-muted font-bold uppercase tracking-wider mb-0.5">Birthday</p>
+                {isEditing ? (
+                  <input type="date" name="birthday" value={formData.birthday} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-lg px-3 py-1.5 text-sm text-main focus:border-primary outline-none" />
+                ) : (
+                  <p className="text-[14px] text-main font-semibold truncate">{user?.birthday ? new Date(user.birthday).toLocaleDateString() : '---'}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-surface-hover flex items-center justify-center text-muted shrink-0 border border-border-color/50">
+                <Globe size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-muted font-bold uppercase tracking-wider mb-0.5">Website</p>
+                {isEditing ? (
+                  <input type="text" name="website" value={formData.website} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-lg px-3 py-1.5 text-sm text-main focus:border-primary outline-none" placeholder="https://" />
+                ) : (
+                  user?.website ? <a href={user.website.startsWith('http') ? user.website : `https://${user.website}`} target="_blank" rel="noopener noreferrer" className="text-[14px] text-primary hover:underline font-semibold truncate block">{user.website}</a> : <p className="text-[14px] text-main font-semibold">---</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-surface-hover flex items-center justify-center text-muted shrink-0 border border-border-color/50">
+                <Code size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-muted font-bold uppercase tracking-wider mb-0.5">GitHub</p>
+                {isEditing ? (
+                  <input type="text" name="github" value={formData.github} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-lg px-3 py-1.5 text-sm text-main focus:border-primary outline-none" placeholder="Username or URL" />
+                ) : (
+                  user?.github ? <a href={user.github.includes('http') ? user.github : `https://github.com/${user.github}`} target="_blank" rel="noopener noreferrer" className="text-[14px] text-primary hover:underline font-semibold truncate block">{user.github}</a> : <p className="text-[14px] text-main font-semibold">---</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-surface-hover flex items-center justify-center text-muted shrink-0 border border-border-color/50">
+                <Link size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[11px] text-muted font-bold uppercase tracking-wider mb-0.5">LinkedIn</p>
+                {isEditing ? (
+                  <input type="text" name="linkedin" value={formData.linkedin} onChange={handleChange} className="w-full bg-surface-hover border border-border-color rounded-lg px-3 py-1.5 text-sm text-main focus:border-primary outline-none" placeholder="LinkedIn URL" />
+                ) : (
+                  user?.linkedin ? <a href={user.linkedin.includes('http') ? user.linkedin : `https://linkedin.com/in/${user.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-[14px] text-primary hover:underline font-semibold truncate block">{user.linkedin}</a> : <p className="text-[14px] text-main font-semibold">---</p>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </form>
     </div>
   );
 };
