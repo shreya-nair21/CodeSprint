@@ -9,6 +9,7 @@ import ProblemWorkspace from './pages/ProblemWorkspace';
 import Leaderboard from './pages/Leaderboard';
 import Submissions from './pages/Submissions';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -40,6 +41,7 @@ function App() {
                 <Route path="/leaderboard" element={<ProtectedRoute><Leaderboard /></ProtectedRoute>} />
                 <Route path="/submissions" element={<ProtectedRoute><Submissions /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
               </Routes>
             </main>
           </div>
