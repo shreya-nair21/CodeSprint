@@ -9,6 +9,8 @@ const Problems = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [difficultyFilter, setDifficultyFilter] = useState('');
+  const [tagFilter, setTagFilter] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -16,7 +18,15 @@ const Problems = () => {
     const fetchProblems = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/problems?page=${page}&limit=20&search=${searchQuery}`);
+        const queryParams = new URLSearchParams({
+          page,
+          limit: 20,
+          search: searchQuery,
+          ...(difficultyFilter && { difficulty: difficultyFilter }),
+          ...(tagFilter && { tags: tagFilter })
+        }).toString();
+        
+        const response = await api.get(`/problems?${queryParams}`);
         setProblems(response.data.problems);
         setTotalPages(response.data.pages);
       } catch (err) {
@@ -32,7 +42,7 @@ const Problems = () => {
     }, 300);
 
     return () => clearTimeout(delayDebounceFn);
-  }, [page, searchQuery]);
+  }, [page, searchQuery, difficultyFilter, tagFilter]);
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
@@ -58,16 +68,37 @@ const Problems = () => {
           <p className="text-sm text-muted mt-1">Sharpen your skills with our collection of algorithmic challenges.</p>
         </div>
 
-        <div style={{ position: 'relative', width: '100%', maxWidth: '300px' }}>
-          <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
-            <Search size={18} />
+        <div className="flex items-center gap-3 w-full md:w-auto" style={{ maxWidth: '600px' }}>
+          <div style={{ position: 'relative', flex: 1 }}>
+            <div style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+              <Search size={18} />
+            </div>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={handleSearch}
+              style={{ paddingLeft: '2.5rem', width: '100%' }}
+            />
           </div>
+          
+          <select 
+            value={difficultyFilter} 
+            onChange={(e) => { setDifficultyFilter(e.target.value); setPage(1); }}
+            className="bg-surface-hover border border-border-color rounded p-2 outline-none text-sm h-[40px]"
+          >
+            <option value="">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+
           <input
             type="text"
-            placeholder="Search problems..."
-            value={searchQuery}
-            onChange={handleSearch}
-            style={{ paddingLeft: '2.5rem' }}
+            placeholder="Tags (comma sep)"
+            value={tagFilter}
+            onChange={(e) => { setTagFilter(e.target.value); setPage(1); }}
+            className="bg-surface-hover border border-border-color rounded p-2 outline-none text-sm h-[40px] w-[150px]"
           />
         </div>
       </div>
@@ -99,8 +130,8 @@ const Problems = () => {
                   problems.map((problem) => (
                     <tr key={problem._id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background-color 0.2s ease' }} className="hover:bg-surface-hover">
                       <td style={{ padding: '1rem 1.5rem', fontWeight: '500' }}>
-                        <Link to={`/problems/${problem._id}`} style={{ color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <div className="flex items-center gap-2">
+                        <Link to={`/problems/${problem._id}`} style={{ color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          <div className="flex items-center gap-2 text-base">
                             {problem.solved ? (
                               <CheckCircle2 size={18} className="text-accent" />
                             ) : (
@@ -108,6 +139,15 @@ const Problems = () => {
                             )}
                             {problem.title}
                           </div>
+                          {problem.tags && problem.tags.length > 0 && (
+                            <div className="flex gap-2 mt-1 ml-6">
+                              {problem.tags.map(tag => (
+                                <span key={tag} className="text-[10px] bg-black/10 px-2 py-0.5 rounded-full text-muted border border-border-color">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </Link>
                       </td>
                       <td style={{ padding: '1rem 1.5rem' }}>
