@@ -529,6 +529,16 @@ input:focus, textarea:focus, select:focus {
   color: var(--text-main);
 }
 
+.icon-btn-primary:hover {
+  background: rgba(59, 130, 246, 0.1);
+  color: var(--primary-color);
+}
+
+.icon-btn-danger:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--danger-color);
+}
+
 .panel-header {
   display: flex;
   align-items: center;
