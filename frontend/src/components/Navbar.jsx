@@ -35,9 +35,15 @@ const Navbar = () => {
           <div className="flex items-center" style={{ gap: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
             {user && (
               <>
-                <Link to="/problems" className="hover:text-main">Problems</Link>
-                <Link to="/leaderboard" className="hover:text-main">Leaderboard</Link>
-                <Link to="/submissions" className="hover:text-main">Submissions</Link>
+                {user.role === 'admin' ? (
+                  <Link to="/admin" className="hover:text-main" style={{ color: 'var(--primary-color)', fontWeight: 'bold' }}>Admin Dashboard</Link>
+                ) : (
+                  <>
+                    <Link to="/problems" className="hover:text-main">Problems</Link>
+                    <Link to="/leaderboard" className="hover:text-main">Leaderboard</Link>
+                    <Link to="/submissions" className="hover:text-main">Submissions</Link>
+                  </>
+                )}
               </>
             )}
           </div>
