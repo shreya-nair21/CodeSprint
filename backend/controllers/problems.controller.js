@@ -7,8 +7,19 @@ export const getAllProblems = async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
     const search = req.query.search || '';
+    const difficulty = req.query.difficulty;
+    const tags = req.query.tags;
 
     const query = search ? { title: { $regex: search, $options: 'i' } } : {};
+    
+    if (difficulty) {
+      query.difficulty = difficulty;
+    }
+    
+    if (tags) {
+      // Split by comma and find problems containing all specified tags
+      query.tags = { $all: tags.split(',') };
+    }
 
     const total = await Problem.countDocuments(query);
     const problems = await Problem.find(query)
@@ -58,16 +69,51 @@ export const getProblemById = async (req, res) => {
 //to create problem(accessible by admin only)
 export const createProblem = async (req, res) => {
   try {
-    const { title, description, difficulty, testCases } = req.body;
+    const { title, description, difficulty, tags, editorial, testCases } = req.body;
 
     const problem = await Problem.create({
       title,
       description,
       difficulty,
+      tags: tags || [],
+      editorial: editorial || '',
       testCases
     });
 
     res.status(201).json(problem);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const updateProblem = async (req, res) => {
+  try {
+    const { title, description, difficulty, tags, editorial, testCases } = req.body;
+    
+    const problem = await Problem.findByIdAndUpdate(
+      req.params.id, 
+      { title, description, difficulty, tags, editorial, testCases }, 
+      { new: true, runValidators: true }
+    );
+    
+    if (!problem) {
+      return res.status(404).json({ message: 'Problem not found' });
+    }
+    res.json(problem);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const deleteProblem = async (req, res) => {
+  try {
+    const problem = await Problem.findByIdAndDelete(req.params.id);
+    if (!problem) {
+      return res.status(404).json({ message: 'Problem not found' });
+    }
+    // Delete related submissions and comments
+    await Submission.deleteMany({ problemId: req.params.id });
+    res.json({ message: 'Problem deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
