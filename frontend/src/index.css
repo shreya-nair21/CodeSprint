@@ -268,6 +268,13 @@ input:focus, textarea:focus, select:focus {
 .rounded-2xl { border-radius: 16px; }
 .rounded-full { border-radius: 9999px; }
 
+.bg-surface { background-color: var(--surface-color); }
+.bg-surface-hover { background-color: var(--surface-hover); }
+.bg-primary { background-color: var(--primary-color); }
+.bg-accent { background-color: var(--accent-color); }
+.bg-danger { background-color: var(--danger-color); }
+.bg-orange-500 { background-color: #f97316; }
+
 .text-main { color: var(--text-main); }
 .text-muted { color: var(--text-muted); }
 .text-primary { color: var(--primary-color); }
