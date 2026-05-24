@@ -2,21 +2,25 @@
 
 :root {
   /* Twenty.com Premium Light Paper Palette (Forced Globally) */
-  --bg-color: #faf9f6; /* Warm elegant off-white paper */
+  --bg-color: #faf9f6;
+  /* Warm elegant off-white paper */
   --bg-gradient: radial-gradient(circle at 50% 0%, #ffffff 0%, #faf9f6 70%);
   --surface-color: #ffffff;
   --surface-hover: #f5f4f0;
-  --primary-color: #1c1917; /* Elegant charcoal black */
+  --primary-color: #1c1917;
+  /* Elegant charcoal black */
   --primary-hover: #292524;
   --secondary-color: #78716c;
-  
+
   /* Accent Colors */
-  --accent-color: #e36436; /* Twenty's Signature Warm Copper/Orange */
+  --accent-color: #e36436;
+  /* Twenty's Signature Warm Copper/Orange */
   --danger-color: #ef4444;
 
   --text-main: #1c1917;
   --text-muted: #78716c;
-  --border-color: rgba(0, 0, 0, 0.05); /* Razor-thin premium boundary */
+  --border-color: rgba(0, 0, 0, 0.05);
+  /* Razor-thin premium boundary */
   --nav-bg: rgba(250, 249, 246, 0.8);
 
   /* Twenty specific variables */
@@ -27,8 +31,10 @@
 
   /* Grid Background Variables (Light Mode) */
   --grid-line: rgba(0, 0, 0, 0.02);
-  --grid-glow: rgba(251, 146, 60, 0.06); /* Soft Amber Aura */
-  --grid-glow-2: rgba(219, 39, 119, 0.02); /* Soft Rose Aura */
+  --grid-glow: rgba(251, 146, 60, 0.06);
+  /* Soft Amber Aura */
+  --grid-glow-2: rgba(219, 39, 119, 0.02);
+  /* Soft Rose Aura */
 
   /* Utilities */
   --border-radius: 12px;
@@ -38,7 +44,8 @@
 }
 
 /* Force Light paper theme variables globally */
-[data-theme='light'], [data-theme='dark'] {
+[data-theme='light'],
+[data-theme='dark'] {
   --bg-color: #faf9f6;
   --bg-gradient: radial-gradient(circle at 50% 0%, #ffffff 0%, #faf9f6 70%);
   --surface-color: #ffffff;
@@ -69,43 +76,106 @@
 
 /* Premium Animations (Twenty.com Style) */
 @keyframes floatUp1 {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-12px) rotate(0.3deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-12px) rotate(0.3deg);
+  }
 }
 
 @keyframes floatUp2 {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-18px) rotate(-0.3deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-18px) rotate(-0.3deg);
+  }
 }
 
 @keyframes floatUp3 {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(0.1deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(0.1deg);
+  }
 }
 
 @keyframes pulseGlow {
-  0%, 100% { transform: translate(0px, 0px) scale(1); opacity: 0.7; }
-  33% { transform: translate(30px, -40px) scale(1.1); opacity: 0.9; }
-  66% { transform: translate(-15px, 30px) scale(0.95); opacity: 0.6; }
+
+  0%,
+  100% {
+    transform: translate(0px, 0px) scale(1);
+    opacity: 0.7;
+  }
+
+  33% {
+    transform: translate(30px, -40px) scale(1.1);
+    opacity: 0.9;
+  }
+
+  66% {
+    transform: translate(-15px, 30px) scale(0.95);
+    opacity: 0.6;
+  }
 }
 
 @keyframes gridLaser {
-  0% { transform: translateY(-100%); opacity: 0; }
-  15% { opacity: 0.6; }
-  85% { opacity: 0.6; }
-  100% { transform: translateY(100vh); opacity: 0; }
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 0.6;
+  }
+
+  85% {
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
 }
 
 @keyframes textGradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Helper Animation Classes */
-.float-1 { animation: floatUp1 7s ease-in-out infinite; }
-.float-2 { animation: floatUp2 9s ease-in-out infinite; }
-.float-3 { animation: floatUp3 6s ease-in-out infinite; }
+.float-1 {
+  animation: floatUp1 7s ease-in-out infinite;
+}
+
+.float-2 {
+  animation: floatUp2 9s ease-in-out infinite;
+}
+
+.float-3 {
+  animation: floatUp3 6s ease-in-out infinite;
+}
 
 .glow-orb {
   position: absolute;
@@ -1285,8 +1355,117 @@ select:focus {
   transform: translateX(0);
 }
 
-.delay-100 { transition-delay: 100ms; }
-.delay-200 { transition-delay: 200ms; }
-.delay-300 { transition-delay: 300ms; }
-.delay-400 { transition-delay: 400ms; }
-.delay-500 { transition-delay: 500ms; }
+.delay-100 {
+  transition-delay: 100ms;
+}
+
+.delay-200 {
+  transition-delay: 200ms;
+}
+
+.delay-300 {
+  transition-delay: 300ms;
+}
+
+.delay-400 {
+  transition-delay: 400ms;
+}
+
+.delay-500 {
+  transition-delay: 500ms;
+}
+
+/* Animated 3D border sweep for premium isometric desk */
+@keyframes borderSweep {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.glowing-border-deck {
+  position: relative;
+}
+
+.glowing-border-deck::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(90deg, #e36436, #78716c, #e36436);
+  background-size: 300% 300%;
+  border-radius: 21px;
+  z-index: -1;
+  opacity: 0.15;
+  transition: opacity 0.5s ease;
+  animation: borderSweep 8s ease infinite;
+}
+
+.glowing-border-deck:hover::before {
+  opacity: 0.5;
+  filter: blur(1.5px);
+}
+
+/* AI Diagnostics Sweeping Laser and Interactive Keyframes */
+.twenty-card:hover .diagnostics-scanner-ray {
+  animation: scanSweep 1.5s ease-in-out infinite;
+}
+
+@keyframes scanSweep {
+  0% {
+    top: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    top: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Delicate background scanning laser line */
+.laser-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-color) 30%, #fbd97c 50%, var(--accent-color) 70%, transparent);
+  box-shadow: 0 0 12px var(--accent-color);
+  z-index: 1;
+  pointer-events: none;
+  animation: backgroundScan 24s linear infinite;
+}
+
+@keyframes backgroundScan {
+  0% {
+    top: -5%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.55;
+  }
+  40% {
+    opacity: 0.55;
+  }
+  100% {
+    top: 105%;
+    opacity: 0;
+  }
+}
