@@ -783,16 +783,26 @@ select:focus {
   gap: 4px;
   height: 100%;
   align-items: center;
+  overflow-x: auto;
+  white-space: nowrap;
+  max-width: 100%;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+
+.panel-tabs::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 
 .tab-item {
-  padding: 6px 12px;
-  font-size: 0.8rem;
+  padding: 4px 8px;
+  font-size: 0.75rem;
   font-weight: 500;
   border-radius: 6px;
   cursor: pointer;
   color: var(--text-muted);
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .tab-item:hover {
