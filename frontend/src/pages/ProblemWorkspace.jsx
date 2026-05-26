@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { marked } from 'marked';
@@ -20,7 +20,8 @@ import {
   History,
   MessageSquare,
   User as UserIcon,
-  Clock
+  Clock,
+  Sparkles
 } from 'lucide-react';
 
 const ProblemWorkspace = () => {
@@ -42,6 +43,114 @@ const ProblemWorkspace = () => {
   const [newComment, setNewComment] = useState('');
   const [loadingComments, setLoadingComments] = useState(false);
   const [postingComment, setPostingComment] = useState(false);
+
+  const [chatHistory, setChatHistory] = useState([
+    { sender: 'ai', text: "Hello! I am Socrates AI, your programming mentor. Write your code on the right and ask me questions about it. I won't give away the solution directly, but I will guide you to it!" }
+  ]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
+  const [complexityReview, setComplexityReview] = useState(null);
+  const [analyzingComplexity, setAnalyzingComplexity] = useState(false);
+
+  const chatEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory, aiLoading]);
+
+  const handleSendMessage = async (e) => {
+    if (e) e.preventDefault();
+    if (!inputMessage.trim() || aiLoading) return;
+
+    const userMsg = inputMessage;
+    setInputMessage('');
+    
+    const updatedHistory = [...chatHistory, { sender: 'user', text: userMsg }];
+    setChatHistory(updatedHistory);
+    setAiLoading(true);
+
+    try {
+      const response = await api.post('/ai/mentor', {
+        problemId: id,
+        code,
+        language: languages.find(l => l.id === language)?.name || 'Python 3',
+        chatHistory: updatedHistory.map(m => ({ sender: m.sender, text: m.text }))
+      });
+
+      setChatHistory([...updatedHistory, { sender: 'ai', text: response.data.reply }]);
+    } catch (error) {
+      console.error('Error talking to Socratic Mentor:', error);
+      setChatHistory([...updatedHistory, { 
+        sender: 'ai', 
+        text: 'Sorry, I ran into an error connecting to my neural core. Please try again in a moment!' 
+      }]);
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const handleSuggestionClick = async (type) => {
+    if (aiLoading) return;
+
+    if (type === 'complexity') {
+      setAnalyzingComplexity(true);
+      try {
+        const response = await api.post('/ai/review', {
+          problemId: id,
+          code,
+          language: languages.find(l => l.id === language)?.name || 'Python 3'
+        });
+        setComplexityReview(response.data);
+      } catch (error) {
+        console.error('Error analyzing complexity:', error);
+        alert('Failed to analyze complexity. Please try again.');
+      } finally {
+        setAnalyzingComplexity(false);
+      }
+    } else if (type === 'bugs') {
+      setAiLoading(true);
+      const userMsg = 'Are there any logical bugs or unhandled edge cases in my current code?';
+      const updatedHistory = [...chatHistory, { sender: 'user', text: userMsg }];
+      setChatHistory(updatedHistory);
+      try {
+        const response = await api.post('/ai/mentor', {
+          problemId: id,
+          code,
+          language: languages.find(l => l.id === language)?.name || 'Python 3',
+          chatHistory: updatedHistory.map(m => ({ sender: m.sender, text: m.text }))
+        });
+        setChatHistory([...updatedHistory, { sender: 'ai', text: response.data.reply }]);
+      } catch (error) {
+        console.error('Error finding bugs:', error);
+        setChatHistory([...updatedHistory, { sender: 'ai', text: 'Failed to scan for bugs. Please try again.' }]);
+      } finally {
+        setAiLoading(false);
+      }
+    } else if (type === 'hint') {
+      setAiLoading(true);
+      const userMsg = 'Could you give me a gentle conceptual hint without spoiling the solution?';
+      const updatedHistory = [...chatHistory, { sender: 'user', text: userMsg }];
+      setChatHistory(updatedHistory);
+      try {
+        const response = await api.post('/ai/mentor', {
+          problemId: id,
+          code,
+          language: languages.find(l => l.id === language)?.name || 'Python 3',
+          chatHistory: updatedHistory.map(m => ({ sender: m.sender, text: m.text }))
+        });
+        setChatHistory([...updatedHistory, { sender: 'ai', text: response.data.reply }]);
+      } catch (error) {
+        console.error('Error getting hint:', error);
+        setChatHistory([...updatedHistory, { sender: 'ai', text: 'Failed to fetch hint. Please try again.' }]);
+      } finally {
+        setAiLoading(false);
+      }
+    }
+  };
 
   const languages = [
     { id: '71', name: 'Python 3', monaco: 'python', starter: 'def solve():\n    # Write your code here\n    pass\n\nif __name__ == "__main__":\n    solve()' },
@@ -180,6 +289,14 @@ const ProblemWorkspace = () => {
               </div>
             </div>
             <div
+              className={`tab-item ${leftTab === 'ai-mentor' ? 'active' : ''}`}
+              onClick={() => setLeftTab('ai-mentor')}
+            >
+              <div className="flex items-center gap-2">
+                <Sparkles size={14} className="text-accent" /> AI Mentor
+              </div>
+            </div>
+            <div
               className={`tab-item ${leftTab === 'submissions' ? 'active' : ''}`}
               onClick={() => setLeftTab('submissions')}
             >
@@ -236,6 +353,145 @@ const ProblemWorkspace = () => {
                   </div>
                 </div>
               )}
+            </div>
+          )}
+
+          {leftTab === 'ai-mentor' && (
+            <div className="flex flex-col h-full animate-fade-in chat-panel-container">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-bold">AI Socratic Mentor</h2>
+                <button 
+                  className="text-xs text-muted hover:text-primary flex items-center gap-1 border border-border-color rounded px-2 py-1 bg-surface-hover transition-all"
+                  onClick={() => setChatHistory([
+                    { sender: 'ai', text: "Hello! I am Socrates AI, your programming mentor. Write your code on the right and ask me questions about it. I won't give away the solution directly, but I will guide you to it!" }
+                  ])}
+                >
+                  <RotateCcw size={12} /> Clear Chat
+                </button>
+              </div>
+
+              {/* Chat Message Window */}
+              <div className="chat-messages-container flex-1 overflow-y-auto mb-4 p-3 rounded-lg border border-border-color bg-surface-hover">
+                {chatHistory.map((msg, idx) => (
+                  <div key={idx} className={`chat-bubble-wrapper ${msg.sender === 'user' ? 'user' : 'ai'}`}>
+                    <div className="chat-bubble-avatar">
+                      {msg.sender === 'user' ? 'U' : <Sparkles size={12} className="text-accent" />}
+                    </div>
+                    <div className="chat-bubble-content">
+                      <span className="chat-bubble-sender-name">
+                        {msg.sender === 'user' ? 'You' : 'Socrates AI'}
+                      </span>
+                      <div className="chat-bubble-text text-sm">
+                        {msg.text.split('\n').map((line, lIdx) => (
+                          <p key={lIdx} className={line.trim() ? "mb-2" : "h-2"} style={{ margin: line.trim() ? '0 0 8px 0' : '0' }}>{line}</p>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {aiLoading && (
+                  <div className="chat-bubble-wrapper ai">
+                    <div className="chat-bubble-avatar">
+                      <Sparkles size={12} className="text-accent animate-pulse" />
+                    </div>
+                    <div className="chat-bubble-content">
+                      <span className="chat-bubble-sender-name">Socrates AI</span>
+                      <div className="typing-indicator flex items-center gap-1 mt-2">
+                        <span className="dot"></span>
+                        <span className="dot"></span>
+                        <span className="dot"></span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              {/* Suggestion Chips */}
+              <div className="suggestion-chips-container mb-3 flex flex-wrap gap-2">
+                <button 
+                  className="suggestion-chip"
+                  onClick={() => handleSuggestionClick('complexity')}
+                  disabled={aiLoading || analyzingComplexity}
+                >
+                  {analyzingComplexity ? <Loader2 className="animate-spin" size={12} /> : '🔍 Analyze Complexity'}
+                </button>
+                <button 
+                  className="suggestion-chip"
+                  onClick={() => handleSuggestionClick('bugs')}
+                  disabled={aiLoading}
+                >
+                  🐛 Find Logical Bugs
+                </button>
+                <button 
+                  className="suggestion-chip"
+                  onClick={() => handleSuggestionClick('hint')}
+                  disabled={aiLoading}
+                >
+                  💡 Get Socratic Hint
+                </button>
+              </div>
+
+              {/* Complexity Review Card */}
+              {complexityReview && (
+                <div className="complexity-review-card mb-4 p-4 border rounded-lg bg-surface relative animate-fade-in border-accent/20">
+                  <button 
+                    className="absolute top-2 right-2 text-muted hover:text-primary text-xs font-bold"
+                    onClick={() => setComplexityReview(null)}
+                  >
+                    × Close
+                  </button>
+                  <h3 className="text-sm font-bold text-accent mb-2 uppercase tracking-wide">Code Efficiency Review</h3>
+                  
+                  <div className="flex gap-4 mb-3 border-b border-border-color pb-2">
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-muted block">Time Complexity</span>
+                      <span className="font-mono text-sm font-bold text-main">{complexityReview.timeComplexity}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-muted block">Space Complexity</span>
+                      <span className="font-mono text-sm font-bold text-main">{complexityReview.spaceComplexity}</span>
+                    </div>
+                  </div>
+
+                  <div className="mb-2">
+                    <span className="text-[10px] uppercase font-bold text-muted block mb-1">Key Review Points</span>
+                    <ul className="list-disc list-inside text-xs text-main pl-1 flex flex-col gap-1">
+                      {complexityReview.reviewPoints?.map((pt, i) => (
+                        <li key={i}>{pt}</li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {complexityReview.suggestions && (
+                    <div>
+                      <span className="text-[10px] uppercase font-bold text-muted block mb-1">Suggestions</span>
+                      <p className="text-xs text-main bg-surface-hover p-2 rounded">{complexityReview.suggestions}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Chat Input Field */}
+              <form onSubmit={handleSendMessage} className="flex gap-2 chat-input-form mt-auto">
+                <input
+                  type="text"
+                  className="flex-1 bg-surface border border-border-color rounded-lg px-3 py-2 text-sm focus:border-accent outline-none"
+                  placeholder="Ask Socrates AI a question..."
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  disabled={aiLoading}
+                />
+                <button 
+                  type="submit" 
+                  className="submit-btn" 
+                  disabled={aiLoading || !inputMessage.trim()}
+                  style={{ width: '40px', height: '38px', minWidth: '40px', padding: 0, justifyContent: 'center' }}
+                >
+                  <Send size={14} />
+                </button>
+              </form>
             </div>
           )}
 
