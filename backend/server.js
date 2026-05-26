@@ -8,6 +8,7 @@ import submissionRoutes from './routes/submissions.routes.js';
 import leaderboardRoutes from './routes/leaderboard.routes.js';
 import commentRoutes from './routes/comments.routes.js';
 import adminRoutes from './routes/admin.routes.js';
+import aiRoutes from './routes/ai.routes.js';
 
 dotenv.config();
 
@@ -43,3 +44,4 @@ app.use('/api/submissions', submissionRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/ai', aiRoutes);
