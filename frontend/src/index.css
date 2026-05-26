@@ -1493,3 +1493,278 @@ select:focus {
     opacity: 0;
   }
 }
+
+/* AI Socratic Mentor Premium Styles */
+.chat-panel-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-messages-container {
+  flex: 1 1 0%;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-color);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  scroll-behavior: smooth;
+}
+
+.chat-bubble-wrapper {
+  display: flex;
+  gap: 12px;
+  max-width: 85%;
+  animation: chatBubbleAppear 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  align-items: flex-start;
+}
+
+.chat-bubble-wrapper.ai {
+  align-self: flex-start;
+}
+
+.chat-bubble-wrapper.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+  max-width: 80%;
+}
+
+.chat-bubble-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.chat-bubble-wrapper.ai .chat-bubble-avatar {
+  background: linear-gradient(135deg, var(--accent-color), #fbd97c);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.chat-bubble-wrapper.user .chat-bubble-avatar {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+}
+
+.chat-bubble-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chat-bubble-sender-name {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.chat-bubble-wrapper.user .chat-bubble-sender-name {
+  text-align: right;
+}
+
+.chat-bubble-text {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+}
+
+.chat-bubble-wrapper.ai .chat-bubble-text {
+  background: var(--surface-color);
+  border: 1px solid rgba(227, 100, 54, 0.08);
+  border-top-left-radius: 2px;
+  /* Glowing line for Socrates response */
+  border-left: 3px solid var(--accent-color);
+}
+
+.chat-bubble-wrapper.user .chat-bubble-text {
+  background: var(--surface-hover);
+  border: 1px solid var(--border-color);
+  border-top-right-radius: 2px;
+}
+
+/* Typing Indicator styling */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  border-top-left-radius: 2px;
+  width: max-content;
+}
+
+.typing-indicator .dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-color);
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes chatBubbleAppear {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* suggestion chip customization */
+.suggestion-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.suggestion-chip {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: var(--shadow-sm);
+}
+
+.suggestion-chip:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background: rgba(227, 100, 54, 0.03);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(227, 100, 54, 0.08);
+}
+
+.suggestion-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Socratic Complexity Review Card */
+.complexity-review-card {
+  background: var(--surface-color);
+  border: 1px solid rgba(227, 100, 54, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  animation: cardSlideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-shadow: 0 8px 24px rgba(227, 100, 54, 0.04), var(--shadow-sm);
+}
+
+.complexity-review-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-color), #fbd97c);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+@keyframes cardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Chat Input field and form */
+.chat-input-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  padding: 6px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.chat-input-form:focus-within {
+  border-color: rgba(227, 100, 54, 0.3);
+  box-shadow: 0 4px 16px rgba(227, 100, 54, 0.06), var(--shadow-sm);
+}
+
+.chat-input-field {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  color: var(--text-main);
+  outline: none;
+}
+
+.chat-input-field::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.chat-send-btn {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  background: var(--accent-color);
+  transform: scale(1.04);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

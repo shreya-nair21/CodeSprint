@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { marked } from 'marked';
 import api from '../api/axios';
+import { useAuth } from '../context/AuthContext';
 import {
   Play,
   Send,
@@ -27,6 +28,7 @@ import {
 const ProblemWorkspace = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [problem, setProblem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState('');
@@ -358,46 +360,67 @@ const ProblemWorkspace = () => {
 
           {leftTab === 'ai-mentor' && (
             <div className="flex flex-col h-full animate-fade-in chat-panel-container">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">AI Socratic Mentor</h2>
+              <div className="flex justify-between items-center mb-4 pb-3 border-b border-border-color/60">
+                <div>
+                  <h2 className="text-lg font-bold text-main flex items-center gap-2">
+                    <Sparkles size={18} className="text-accent" /> AI Socratic Mentor
+                  </h2>
+                  <p className="text-[11px] font-semibold text-accent/80 flex items-center gap-1.5 mt-0.5">
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></span>
+                    Socratic Mode Active
+                  </p>
+                </div>
                 <button 
-                  className="text-xs text-muted hover:text-primary flex items-center gap-1 border border-border-color rounded px-2 py-1 bg-surface-hover transition-all"
+                  className="text-xs text-muted hover:text-accent flex items-center gap-1.5 border border-border-color rounded-lg px-2.5 py-1.5 bg-surface-hover transition-all hover:border-accent/30"
                   onClick={() => setChatHistory([
                     { sender: 'ai', text: "Hello! I am Socrates AI, your programming mentor. Write your code on the right and ask me questions about it. I won't give away the solution directly, but I will guide you to it!" }
                   ])}
                 >
-                  <RotateCcw size={12} /> Clear Chat
+                  <RotateCcw size={12} /> Reset Chat
                 </button>
               </div>
 
               {/* Chat Message Window */}
-              <div className="chat-messages-container flex-1 overflow-y-auto mb-4 p-3 rounded-lg border border-border-color bg-surface-hover">
-                {chatHistory.map((msg, idx) => (
-                  <div key={idx} className={`chat-bubble-wrapper ${msg.sender === 'user' ? 'user' : 'ai'}`}>
-                    <div className="chat-bubble-avatar">
-                      {msg.sender === 'user' ? 'U' : <Sparkles size={12} className="text-accent" />}
-                    </div>
-                    <div className="chat-bubble-content">
-                      <span className="chat-bubble-sender-name">
-                        {msg.sender === 'user' ? 'You' : 'Socrates AI'}
-                      </span>
-                      <div className="chat-bubble-text text-sm">
-                        {msg.text.split('\n').map((line, lIdx) => (
-                          <p key={lIdx} className={line.trim() ? "mb-2" : "h-2"} style={{ margin: line.trim() ? '0 0 8px 0' : '0' }}>{line}</p>
-                        ))}
+              <div className="chat-messages-container">
+                {chatHistory.map((msg, idx) => {
+                  const isAi = msg.sender === 'ai';
+                  return (
+                    <div key={idx} className={`chat-bubble-wrapper ${isAi ? 'ai' : 'user'}`}>
+                      <div className="chat-bubble-avatar">
+                        {isAi ? (
+                          <Sparkles size={14} />
+                        ) : (
+                          (user?.username?.charAt(0).toUpperCase() || 'U')
+                        )}
+                      </div>
+                      <div className="chat-bubble-content">
+                        <span className="chat-bubble-sender-name">
+                          {isAi ? 'Socrates AI' : (user?.name || user?.username || 'You')}
+                        </span>
+                        
+                        {isAi ? (
+                          <div 
+                            className="chat-bubble-text text-sm markdown-content problem-description"
+                            dangerouslySetInnerHTML={{ __html: marked.parse(msg.text || '') }}
+                          />
+                        ) : (
+                          <div className="chat-bubble-text text-sm whitespace-pre-wrap">
+                            {msg.text}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 
                 {aiLoading && (
                   <div className="chat-bubble-wrapper ai">
                     <div className="chat-bubble-avatar">
-                      <Sparkles size={12} className="text-accent animate-pulse" />
+                      <Sparkles size={14} className="animate-spin text-white" />
                     </div>
                     <div className="chat-bubble-content">
                       <span className="chat-bubble-sender-name">Socrates AI</span>
-                      <div className="typing-indicator flex items-center gap-1 mt-2">
+                      <div className="typing-indicator">
                         <span className="dot"></span>
                         <span className="dot"></span>
                         <span className="dot"></span>
@@ -409,13 +432,13 @@ const ProblemWorkspace = () => {
               </div>
 
               {/* Suggestion Chips */}
-              <div className="suggestion-chips-container mb-3 flex flex-wrap gap-2">
+              <div className="suggestion-chips-container">
                 <button 
                   className="suggestion-chip"
                   onClick={() => handleSuggestionClick('complexity')}
                   disabled={aiLoading || analyzingComplexity}
                 >
-                  {analyzingComplexity ? <Loader2 className="animate-spin" size={12} /> : '🔍 Analyze Complexity'}
+                  {analyzingComplexity ? <Loader2 className="animate-spin animate-spin-slow" size={12} /> : '🔍 Analyze Complexity'}
                 </button>
                 <button 
                   className="suggestion-chip"
@@ -435,49 +458,55 @@ const ProblemWorkspace = () => {
 
               {/* Complexity Review Card */}
               {complexityReview && (
-                <div className="complexity-review-card mb-4 p-4 border rounded-lg bg-surface relative animate-fade-in border-accent/20">
+                <div className="complexity-review-card mb-4">
                   <button 
-                    className="absolute top-2 right-2 text-muted hover:text-primary text-xs font-bold"
+                    className="absolute top-3 right-3 text-muted hover:text-accent text-sm font-bold transition-colors"
                     onClick={() => setComplexityReview(null)}
                   >
-                    × Close
+                    ×
                   </button>
-                  <h3 className="text-sm font-bold text-accent mb-2 uppercase tracking-wide">Code Efficiency Review</h3>
+                  <h3 className="text-xs font-bold text-accent mb-3 uppercase tracking-wider flex items-center gap-1.5">
+                    🧠 Code Efficiency Review
+                  </h3>
                   
-                  <div className="flex gap-4 mb-3 border-b border-border-color pb-2">
+                  <div className="flex gap-6 mb-3 pb-3 border-b border-border-color">
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-muted block">Time Complexity</span>
-                      <span className="font-mono text-sm font-bold text-main">{complexityReview.timeComplexity}</span>
+                      <span className="text-[10px] uppercase font-bold text-muted block mb-0.5">Time Complexity</span>
+                      <span className="badge badge-easy font-mono text-xs font-bold block w-max">
+                        {complexityReview.timeComplexity}
+                      </span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase font-bold text-muted block">Space Complexity</span>
-                      <span className="font-mono text-sm font-bold text-main">{complexityReview.spaceComplexity}</span>
+                      <span className="text-[10px] uppercase font-bold text-muted block mb-0.5">Space Complexity</span>
+                      <span className="badge badge-medium font-mono text-xs font-bold block w-max">
+                        {complexityReview.spaceComplexity}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="mb-2">
-                    <span className="text-[10px] uppercase font-bold text-muted block mb-1">Key Review Points</span>
-                    <ul className="list-disc list-inside text-xs text-main pl-1 flex flex-col gap-1">
+                  <div className="mb-3">
+                    <span className="text-[10px] uppercase font-bold text-muted block mb-1.5">Key Review Points</span>
+                    <ul className="list-disc list-inside text-xs text-main pl-1 flex flex-col gap-1.5">
                       {complexityReview.reviewPoints?.map((pt, i) => (
-                        <li key={i}>{pt}</li>
+                        <li key={i} className="leading-relaxed">{pt}</li>
                       ))}
                     </ul>
                   </div>
 
                   {complexityReview.suggestions && (
-                    <div>
+                    <div className="mt-2 bg-surface-hover p-2.5 rounded-lg border border-border-color">
                       <span className="text-[10px] uppercase font-bold text-muted block mb-1">Suggestions</span>
-                      <p className="text-xs text-main bg-surface-hover p-2 rounded">{complexityReview.suggestions}</p>
+                      <p className="text-xs text-main leading-relaxed font-medium">{complexityReview.suggestions}</p>
                     </div>
                   )}
                 </div>
               )}
 
               {/* Chat Input Field */}
-              <form onSubmit={handleSendMessage} className="flex gap-2 chat-input-form mt-auto">
+              <form onSubmit={handleSendMessage} className="chat-input-form mt-auto">
                 <input
                   type="text"
-                  className="flex-1 bg-surface border border-border-color rounded-lg px-3 py-2 text-sm focus:border-accent outline-none"
+                  className="chat-input-field"
                   placeholder="Ask Socrates AI a question..."
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
@@ -485,9 +514,8 @@ const ProblemWorkspace = () => {
                 />
                 <button 
                   type="submit" 
-                  className="submit-btn" 
+                  className="chat-send-btn" 
                   disabled={aiLoading || !inputMessage.trim()}
-                  style={{ width: '40px', height: '38px', minWidth: '40px', padding: 0, justifyContent: 'center' }}
                 >
                   <Send size={14} />
                 </button>
