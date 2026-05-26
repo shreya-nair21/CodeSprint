@@ -786,12 +786,12 @@ select:focus {
   overflow-x: auto;
   white-space: nowrap;
   max-width: 100%;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .panel-tabs::-webkit-scrollbar {
-  display: none; /* Chrome/Safari */
+  display: none;
 }
 
 .tab-item {
@@ -880,7 +880,6 @@ select:focus {
 .lc-metrics-container {
   display: flex;
   gap: 32px;
-  /* Increased gap for better alignment */
   padding: 14px 20px;
   background: var(--surface-hover);
   border-bottom: 1px solid var(--border-color);
@@ -1387,9 +1386,17 @@ select:focus {
 
 /* Animated 3D border sweep for premium isometric desk */
 @keyframes borderSweep {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .glowing-border-deck {
@@ -1427,12 +1434,15 @@ select:focus {
     top: 0%;
     opacity: 0;
   }
+
   10% {
     opacity: 1;
   }
+
   90% {
     opacity: 1;
   }
+
   100% {
     top: 100%;
     opacity: 0;
@@ -1444,6 +1454,7 @@ select:focus {
     opacity: 0;
     transform: translateY(2px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1468,12 +1479,15 @@ select:focus {
     top: -5%;
     opacity: 0;
   }
+
   15% {
     opacity: 0.55;
   }
+
   40% {
     opacity: 0.55;
   }
+
   100% {
     top: 105%;
     opacity: 0;
