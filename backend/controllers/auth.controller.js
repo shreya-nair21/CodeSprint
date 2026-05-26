@@ -124,6 +124,20 @@ export const getUserStats = async (req, res) => {
     // Total points (sum of all points from submissions)
     stats.totalPoints = submissions.reduce((sum, s) => sum + (s.points || 0), 0);
 
+    // Calculate heatmap activity (submissions per day)
+    const heatmapMap = new Map();
+    submissions.forEach(sub => {
+      if (sub.createdAt) {
+        const dateStr = new Date(sub.createdAt).toISOString().split('T')[0];
+        heatmapMap.set(dateStr, (heatmapMap.get(dateStr) || 0) + 1);
+      }
+    });
+
+    stats.heatmap = Array.from(heatmapMap.entries()).map(([date, count]) => ({
+      date,
+      count
+    }));
+
     // Get total counts of problems in system for "X of Y" display
     const easyCount = await Problem.countDocuments({ difficulty: 'Easy' });
     const mediumCount = await Problem.countDocuments({ difficulty: 'Medium' });
