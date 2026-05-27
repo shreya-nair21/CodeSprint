@@ -1,4 +1,4 @@
-import { Problem, Submission } from '../models.js';
+import { Problem, Submission, User } from '../models.js';
 
 //fetch all problems with pagination
 export const getAllProblems = async (req, res) => {
@@ -28,17 +28,25 @@ export const getAllProblems = async (req, res) => {
       .limit(limit);
 
     let solvedProblemIds = new Set();
+    let bookmarkedProblemIds = new Set();
     if (req.user) {
-      const submissions = await Submission.find({
-        userId: req.user.id,
-        status: 'Accepted'
-      }).select('problemId');
+      const [submissions, user] = await Promise.all([
+        Submission.find({
+          userId: req.user.id,
+          status: 'Accepted'
+        }).select('problemId'),
+        User.findById(req.user.id).select('bookmarks')
+      ]);
       solvedProblemIds = new Set(submissions.map(s => s.problemId.toString()));
+      if (user && user.bookmarks) {
+        bookmarkedProblemIds = new Set(user.bookmarks.map(id => id.toString()));
+      }
     }
 
     const problemsWithStatus = problems.map(prob => ({
       ...prob.toObject(),
-      solved: solvedProblemIds.has(prob._id.toString())
+      solved: solvedProblemIds.has(prob._id.toString()),
+      bookmarked: bookmarkedProblemIds.has(prob._id.toString())
     }));
 
     res.json({
@@ -59,7 +67,19 @@ export const getProblemById = async (req, res) => {
     if (!problem) {
       return res.status(404).json({ message: 'Problem not found' });
     }
-    res.json(problem);
+
+    let bookmarked = false;
+    if (req.user) {
+      const user = await User.findById(req.user.id).select('bookmarks');
+      if (user && user.bookmarks) {
+        bookmarked = user.bookmarks.map(id => id.toString()).includes(problem._id.toString());
+      }
+    }
+
+    res.json({
+      ...problem.toObject(),
+      bookmarked
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
@@ -114,6 +134,46 @@ export const deleteProblem = async (req, res) => {
     // Delete related submissions and comments
     await Submission.deleteMany({ problemId: req.params.id });
     res.json({ message: 'Problem deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const toggleBookmark = async (req, res) => {
+  try {
+    const problemId = req.params.id;
+    const userId = req.user.id;
+
+    const problem = await Problem.findById(problemId);
+    if (!problem) {
+      return res.status(404).json({ message: 'Problem not found' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Ensure bookmarks array exists
+    if (!user.bookmarks) {
+      user.bookmarks = [];
+    }
+
+    const index = user.bookmarks.indexOf(problemId);
+    let bookmarked = false;
+    if (index === -1) {
+      user.bookmarks.push(problemId);
+      bookmarked = true;
+    } else {
+      user.bookmarks.splice(index, 1);
+      bookmarked = false;
+    }
+
+    await user.save();
+    res.json({
+      bookmarked,
+      message: bookmarked ? 'Problem bookmarked successfully' : 'Problem removed from bookmarks'
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
