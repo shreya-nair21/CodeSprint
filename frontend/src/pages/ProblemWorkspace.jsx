@@ -22,7 +22,8 @@ import {
   MessageSquare,
   User as UserIcon,
   Clock,
-  Sparkles
+  Sparkles,
+  Bookmark
 } from 'lucide-react';
 
 const ProblemWorkspace = () => {
@@ -53,6 +54,22 @@ const ProblemWorkspace = () => {
   const [aiLoading, setAiLoading] = useState(false);
   const [complexityReview, setComplexityReview] = useState(null);
   const [analyzingComplexity, setAnalyzingComplexity] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
+  const [togglingBookmark, setTogglingBookmark] = useState(false);
+
+  const handleToggleBookmark = async () => {
+    if (togglingBookmark) return;
+    setTogglingBookmark(true);
+    try {
+      const response = await api.post(`/problems/${id}/bookmark`);
+      setIsBookmarked(!!response.data.bookmarked);
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      alert('Failed to update bookmark.');
+    } finally {
+      setTogglingBookmark(false);
+    }
+  };
 
   const chatEndRef = useRef(null);
 
@@ -184,6 +201,7 @@ const ProblemWorkspace = () => {
     try {
       const response = await api.get(`/problems/${id}`);
       setProblem(response.data);
+      setIsBookmarked(!!response.data.bookmarked);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching problem:', error);
@@ -328,11 +346,31 @@ const ProblemWorkspace = () => {
         <div className="panel-content">
           {leftTab === 'description' && (
             <div className="animate-fade-in">
-              <h1 className="text-2xl font-bold mb-2">{problem.title}</h1>
-              <div className="flex items-center gap-3 mb-6">
-                <span className={`badge badge-${problem.difficulty.toLowerCase()}`}>
-                  {problem.difficulty}
-                </span>
+              <div className="flex justify-between items-center mb-4 flex-wrap gap-3">
+                <div>
+                  <h1 className="text-2xl font-bold mb-1.5">{problem.title}</h1>
+                  <span className={`badge badge-${problem.difficulty.toLowerCase()}`}>
+                    {problem.difficulty}
+                  </span>
+                </div>
+                <button
+                  onClick={handleToggleBookmark}
+                  disabled={togglingBookmark}
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-border-color bg-surface hover:bg-surface-hover hover:border-primary/20 transition-all text-xs font-bold text-main shadow-sm"
+                  style={{ height: 'fit-content' }}
+                >
+                  {isBookmarked ? (
+                    <>
+                      <Bookmark size={13} style={{ color: 'var(--accent-color)', fill: 'var(--accent-color)' }} />
+                      Bookmarked
+                    </>
+                  ) : (
+                    <>
+                      <Bookmark size={13} className="text-muted" />
+                      Bookmark
+                    </>
+                  )}
+                </button>
               </div>
 
               <div
