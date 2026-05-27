@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
-import { Search, Code2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Search, Code2, AlertCircle, CheckCircle2, Bookmark } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const Problems = () => {
@@ -138,6 +138,9 @@ const Problems = () => {
                               <Code2 size={18} style={{ color: 'var(--primary-color)' }} />
                             )}
                             {problem.title}
+                            {problem.bookmarked && (
+                              <Bookmark size={13} style={{ color: 'var(--accent-color)', fill: 'var(--accent-color)' }} />
+                            )}
                           </div>
                           {problem.tags && problem.tags.length > 0 && (
                             <div className="flex gap-2 mt-1 ml-6">
