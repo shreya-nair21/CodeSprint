@@ -252,11 +252,17 @@ body {
 
 /* Modern Panel */
 .panel {
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+.panel:hover {
+  border-color: rgba(227, 100, 54, 0.15);
+  box-shadow: 0 20px 48px rgba(227, 100, 54, 0.02), var(--shadow-md);
 }
 
 /* Base Elements */
@@ -751,10 +757,17 @@ select:focus {
 .workspace-panel {
   display: flex;
   flex-direction: column;
-  background: var(--surface-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-md);
   overflow: hidden;
+  transition: border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.workspace-panel:hover {
+  border-color: rgba(227, 100, 54, 0.12);
+  box-shadow: 0 20px 48px rgba(227, 100, 54, 0.01), var(--shadow-md);
 }
 
 .workspace-panel-left {
@@ -812,8 +825,9 @@ select:focus {
 
 .tab-item.active {
   background: var(--surface-color);
-  color: var(--text-main);
-  box-shadow: var(--shadow-sm);
+  color: var(--accent-color);
+  box-shadow: 0 4px 12px rgba(227, 100, 54, 0.04), var(--shadow-sm);
+  border: 1px solid rgba(227, 100, 54, 0.08);
 }
 
 .panel-content {
@@ -1767,4 +1781,14 @@ select:focus {
 .chat-send-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* Premium row hover sliding animations */
+.problem-row {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.problem-row:hover {
+  background-color: var(--surface-hover) !important;
+  transform: translateX(6px);
 }
