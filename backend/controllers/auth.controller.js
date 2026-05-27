@@ -144,8 +144,13 @@ export const getUserStats = async (req, res) => {
     const hardCount = await Problem.countDocuments({ difficulty: 'Hard' });
     const totalProblems = easyCount + mediumCount + hardCount;
 
+    // Fetch user's bookmarked problems
+    const userWithBookmarks = await User.findById(userId).populate('bookmarks', 'title difficulty');
+    const bookmarks = userWithBookmarks && userWithBookmarks.bookmarks ? userWithBookmarks.bookmarks : [];
+
     res.json({
       ...stats,
+      bookmarks,
       totalProblems,
       easyCount,
       mediumCount,
