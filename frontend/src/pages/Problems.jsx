@@ -128,7 +128,7 @@ const Problems = () => {
                   </tr>
                 ) : (
                   problems.map((problem) => (
-                    <tr key={problem._id} style={{ borderBottom: '1px solid var(--border-color)', transition: 'background-color 0.2s ease' }} className="hover:bg-surface-hover">
+                    <tr key={problem._id} className="problem-row" style={{ borderBottom: '1px solid var(--border-color)' }}>
                       <td style={{ padding: '1rem 1.5rem', fontWeight: '500' }}>
                         <Link to={`/problems/${problem._id}`} style={{ color: 'var(--text-main)', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                           <div className="flex items-center gap-2 text-base">
