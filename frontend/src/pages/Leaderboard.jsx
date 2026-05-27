@@ -50,7 +50,7 @@ const Leaderboard = () => {
         </div>
       </div>
 
-      <div className="bg-surface rounded-xl border border-border-color overflow-hidden shadow-lg">
+      <div className="panel">
         <table className="w-full text-left border-collapse">
           <thead className="bg-surface-hover">
             <tr>
@@ -63,7 +63,7 @@ const Leaderboard = () => {
           <tbody className="divide-y divide-border-color">
             {leaderboard.length > 0 ? (
               leaderboard.map((user, index) => (
-                <tr key={user._id} className="hover:bg-surface-hover/50 transition-colors">
+                <tr key={user._id} className="problem-row">
                   <td className="px-6 py-4">
                     <span className={`flex items-center justify-center w-8 h-8 rounded-full font-bold ${
                       index === 0 ? 'bg-yellow-500/20 text-yellow-600 dark:text-yellow-500' : 
