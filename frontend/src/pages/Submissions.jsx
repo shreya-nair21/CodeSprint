@@ -86,7 +86,7 @@ const Submissions = () => {
       </div>
 
       {filteredSubmissions.length > 0 ? (
-        <div className="bg-surface rounded-xl border border-border-color overflow-hidden shadow-sm">
+        <div className="panel">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -102,7 +102,7 @@ const Submissions = () => {
               </thead>
               <tbody className="divide-y divide-border-color">
                 {filteredSubmissions.map((sub) => (
-                  <tr key={sub._id} className="hover:bg-surface-hover transition-colors group">
+                  <tr key={sub._id} className="problem-row group">
                     <td className="px-6 py-5">
                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
                         sub.status === 'Accepted' 
