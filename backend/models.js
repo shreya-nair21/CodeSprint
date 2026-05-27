@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema({
   birthday: { type: Date },
   linkedin: { type: String, default: '' },
   github: { type: String, default: '' },
+  bookmarks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Problem' }],
   createdAt: { type: Date, default: Date.now }
 });
 
