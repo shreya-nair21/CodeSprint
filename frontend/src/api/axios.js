@@ -1,7 +1,7 @@
 import axios from 'axios';
 //this is a axios file  to make requests to the backend 
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:5000/api', // Point to our Express backend
+  baseURL: import.meta.env.VITE_API_URL || 'http://127.0.0.1:5000/api', // Point to our Express backend
   headers: {
     'Content-Type': 'application/json',
   },
